@@ -1,0 +1,169 @@
+Enum user_role {
+  subject
+  admin
+}
+
+Enum device_status {
+  unpaired
+  paired
+  offline
+  online
+  inactive
+}
+
+Enum assignment_status {
+  active
+  ended
+}
+
+Enum pairing_status {
+  pending
+  used
+  expired
+  revoked
+}
+
+Enum quality_flag {
+  valid
+  suspect
+  incomplete
+}
+
+Enum inference_status {
+  pending
+  success
+  failed
+}
+
+Enum model_status {
+  training
+  deployed
+  archived
+}
+
+Table users {
+  id uuid [pk]
+  email varchar [not null, unique]
+  password_hash varchar [not null]
+  full_name varchar
+  role user_role [not null, default: 'subject']
+  is_active boolean [not null, default: true]
+  last_login_at timestamptz
+  created_at timestamptz [not null]
+  updated_at timestamptz [not null]
+
+  Note: 'Akun login untuk web. Pada flow baru, subject login lewat tabel ini.'
+}
+
+Table subjects {
+  id uuid [pk]
+  user_id uuid [not null, unique, ref: > users.id]
+  subject_code varchar [not null, unique]
+  display_name varchar
+  age int
+  sex varchar
+  notes text
+  created_at timestamptz [not null]
+  updated_at timestamptz [not null]
+
+  Note: 'Profil health/data owner. Dipisahkan dari users agar nanti tetap fleksibel.'
+}
+
+Table devices {
+  id uuid [pk]
+  device_code varchar [not null, unique]
+  name varchar
+  mqtt_topic varchar [not null, unique]
+  status device_status [not null, default: 'unpaired']
+  firmware_version varchar
+  last_seen_at timestamptz
+  created_at timestamptz [not null]
+  updated_at timestamptz [not null]
+
+  Note: 'Satu baris = satu hardware GLICOVIA.'
+}
+
+Table pairing_tokens {
+  id uuid [pk]
+  device_id uuid [not null, ref: > devices.id]
+  token varchar [not null, unique]
+  qr_payload text [not null]
+  status pairing_status [not null, default: 'pending']
+  expires_at timestamptz [not null]
+  used_at timestamptz
+  revoked_at timestamptz
+  created_at timestamptz [not null]
+
+  Note: 'Token sementara yang ditampilkan sebagai QR di layar hardware.'
+}
+
+Table device_assignments {
+  id uuid [pk]
+  device_id uuid [not null, ref: > devices.id]
+  subject_id uuid [not null, ref: > subjects.id]
+  pairing_token_id uuid [ref: > pairing_tokens.id]
+  status assignment_status [not null, default: 'active']
+  assigned_at timestamptz [not null]
+  unassigned_at timestamptz
+  created_at timestamptz [not null]
+
+  Note: 'Catatan resmi bahwa device sedang terhubung ke subject tertentu.'
+}
+
+Table sensor_readings {
+  id uuid [pk]
+  device_id uuid [not null, ref: > devices.id]
+  subject_id uuid [ref: > subjects.id]
+  device_assignment_id uuid [ref: > device_assignments.id]
+  recorded_at timestamptz [not null]
+  received_at timestamptz [not null]
+  ph decimal(6,3)
+  fructosamine decimal(10,3)
+  salivary_glucose decimal(10,3)
+  raw_payload jsonb [not null]
+  quality_flag quality_flag [not null, default: 'valid']
+  created_at timestamptz [not null]
+
+  Note: 'Data mentah dari MQTT. Tetap disimpan meski model AI belum tersedia.'
+}
+
+Table model_versions {
+  id uuid [pk]
+  model_name varchar [not null]
+  version varchar [not null]
+  status model_status [not null, default: 'training']
+  artifact_url text
+  trained_at timestamptz
+  deployed_at timestamptz
+  notes text
+  created_at timestamptz [not null]
+
+  Indexes {
+    (model_name, version) [unique]
+  }
+
+  Note: 'Metadata versi model AI/SVM yang dipakai saat inferensi.'
+}
+
+Table prediction_results {
+  id uuid [pk]
+  sensor_reading_id uuid [not null, ref: > sensor_readings.id]
+  model_version_id uuid [not null, ref: > model_versions.id]
+  glucose_estimate decimal(10,3)
+  clinical_category varchar
+  confidence_score decimal(5,4)
+  inference_status inference_status [not null, default: 'pending']
+  predicted_at timestamptz
+  created_at timestamptz [not null]
+
+  Note: 'Hasil prediksi AI dari satu sensor reading.'
+}
+
+Ref: devices.id < pairing_tokens.device_id
+Ref: devices.id < device_assignments.device_id
+Ref: subjects.id < device_assignments.subject_id
+Ref: device_assignments.id < sensor_readings.device_assignment_id
+Ref: devices.id < sensor_readings.device_id
+Ref: subjects.id < sensor_readings.subject_id
+Ref: model_versions.id < prediction_results.model_version_id
+Ref: sensor_readings.id < prediction_results.sensor_reading_id

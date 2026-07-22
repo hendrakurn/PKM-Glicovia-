@@ -1,0 +1,237 @@
+"use client";
+
+import Link from "next/link";
+import { useEffect, useMemo, useState } from "react";
+import { ArrowClockwise, Brain, Clock, DeviceMobile, Drop, LinkSimple, WarningCircle } from "@phosphor-icons/react";
+import { api, ApiError } from "@/lib/api/client";
+import type { AuthProfile, PredictionResultRow, ReadingTrendRow, SensorReadingRow, SubjectDeviceRow } from "@/lib/api/types";
+import { categoryTone, formatGlucose, formatPercentValue, formatTimestamp, qualityTone, readingMeaning, relativeFreshness, statusTone, toNumber, truncateId } from "@/lib/utils";
+import { GlicoBadge, GlicoButton, GlicoPanel, Heartbeat, KeyValue, PageHeader, SkeletonBlock, StateBlock, glicoButtonClasses } from "@/components/glicovia-ui";
+import { useAuth } from "@/components/auth-provider";
+import { TrendChart } from "@/components/trend-chart";
+
+type OverviewData = {
+  profile: AuthProfile;
+  latest: SensorReadingRow | null;
+  trends: ReadingTrendRow[];
+  devices: SubjectDeviceRow[];
+  predictions: PredictionResultRow[];
+};
+
+export function OverviewClient() {
+  const { token } = useAuth();
+  const [data, setData] = useState<OverviewData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [refreshKey, setRefreshKey] = useState(0);
+
+  useEffect(() => {
+    if (!token) return;
+    const authToken = token;
+    let active = true;
+
+    async function load() {
+      try {
+        setLoading(true);
+        setError(null);
+        const profile = await api.me(authToken);
+        const [latestResult, trendsResult, devicesResult, predictionsResult] = await Promise.allSettled([
+          api.latestReading({}, authToken),
+          api.readingTrends({ bucket: "hour", limit: 16 }, authToken),
+          api.myDevices(authToken),
+          api.predictions({ limit: 5 }),
+        ]);
+
+        if (!active) return;
+
+        let latest: SensorReadingRow | null = null;
+        if (latestResult.status === "fulfilled") {
+          latest = latestResult.value.reading;
+        } else if (!(latestResult.reason instanceof ApiError && latestResult.reason.status === 404)) {
+          throw latestResult.reason;
+        }
+
+        if (trendsResult.status === "rejected") throw trendsResult.reason;
+        if (devicesResult.status === "rejected") throw devicesResult.reason;
+
+        setData({
+          profile,
+          latest,
+          trends: trendsResult.value.trends,
+          devices: devicesResult.value.devices,
+          predictions: predictionsResult.status === "fulfilled" ? predictionsResult.value : [],
+        });
+      } catch (caught) {
+        if (active) setError(caught instanceof Error ? caught.message : "Unable to load overview.");
+      } finally {
+        if (active) setLoading(false);
+      }
+    }
+
+    void load();
+    return () => {
+      active = false;
+    };
+  }, [refreshKey, token]);
+
+  const latestPrediction = data?.predictions[0] ?? null;
+  const primaryValue = latestPrediction?.glucose_estimate ?? data?.latest?.salivary_glucose ?? null;
+  const hasPrimaryValue = toNumber(primaryValue) !== null;
+  const primaryLabel = latestPrediction?.glucose_estimate ? "Estimated glucose" : "Saliva glucose signal";
+  const category = latestPrediction?.clinical_category ?? (data?.latest ? "Reading received" : null);
+  const freshness = relativeFreshness(latestPrediction?.sensor_recorded_at ?? data?.latest?.recorded_at);
+
+  const nextAction = useMemo(() => {
+    if (!data) return "Open the dashboard after sign-in.";
+    if (data.devices.length === 0) return "Pair a GLICOVIA reader to begin collecting readings.";
+    if (!data.latest) return "Keep the reader nearby and send the first saliva sample when ready.";
+    if ((data.latest.quality_flag ?? "").toLowerCase() !== "valid") return "Repeat when convenient so the model receives a cleaner sample.";
+    return "Keep your normal routine and check the next reading for direction.";
+  }, [data]);
+
+  if (loading) return <OverviewSkeleton />;
+
+  if (error) {
+    return (
+      <StateBlock
+        tone="coral"
+        title="Overview could not load"
+        description={error}
+        icon={<WarningCircle size={22} weight="bold" />}
+        action={
+          <GlicoButton type="button" variant="secondary" onClick={() => setRefreshKey((current) => current + 1)}>
+            <ArrowClockwise size={18} weight="bold" />
+            Try again
+          </GlicoButton>
+        }
+      />
+    );
+  }
+
+  if (!data) return null;
+
+  return (
+    <div className="grid gap-7">
+      <PageHeader
+        eyebrow="Subject overview"
+        title={`Good data starts with context, ${data.profile.subject.display_name || data.profile.user.full_name || "there"}.`}
+        description="Current reading, category, freshness, device state, and model context are grouped so a patient can understand the signal before reading raw rows."
+        action={
+          <GlicoButton type="button" variant="secondary" onClick={() => setRefreshKey((current) => current + 1)}>
+            <ArrowClockwise size={18} weight="bold" />
+            Refresh
+          </GlicoButton>
+        }
+      />
+
+      <section className="grid gap-5 xl:grid-cols-[minmax(0,1.35fr)_390px]">
+        <GlicoPanel className="reveal-up overflow-hidden">
+          <div className="grid gap-0 lg:grid-cols-[minmax(0,1fr)_280px]">
+            <div className="p-6 sm:p-8">
+              <div className="mb-5 flex flex-wrap items-center gap-2">
+                <GlicoBadge tone={categoryTone(category)}>{category ?? "Waiting for reading"}</GlicoBadge>
+                {data.latest ? <Heartbeat label={freshness} /> : null}
+              </div>
+              <p className="label-text">{primaryLabel}</p>
+              <div className="mt-3 flex flex-wrap items-end gap-3">
+                <p className="text-6xl font-black leading-none text-[color:var(--ink)] sm:text-7xl lg:text-8xl">
+                  {hasPrimaryValue ? formatGlucose(primaryValue).replace(" mg/dL", "") : "--"}
+                </p>
+                <p className="pb-2 text-xl font-black text-[color:var(--ink-muted)]">mg/dL</p>
+              </div>
+              <p className="mt-5 max-w-2xl text-lg leading-8 text-[color:var(--ink-muted)]">{readingMeaning(latestPrediction?.clinical_category)}</p>
+            </div>
+
+            <div className="border-t-2 border-[color:var(--line)] bg-[color:var(--mint)] p-5 lg:border-l-2 lg:border-t-0">
+              <p className="label-text">Next action</p>
+              <p className="mt-3 text-2xl font-black leading-tight text-[color:var(--ink)]">{nextAction}</p>
+              <div className="mt-6 grid gap-3">
+                <Link href="/readings" className={glicoButtonClasses("secondary")}>Open readings</Link>
+                <Link href="/devices" className={glicoButtonClasses("ink")}>Pair device</Link>
+              </div>
+            </div>
+          </div>
+        </GlicoPanel>
+
+        <GlicoPanel className="reveal-up p-5" style={{ animationDelay: "70ms" }}>
+          <div className="mb-4 flex items-start justify-between gap-3">
+            <div>
+              <p className="label-text">Trust signals</p>
+              <h2 className="mt-2 text-2xl font-black text-[color:var(--ink)]">Why this reading is believable</h2>
+            </div>
+            <Brain size={30} weight="bold" />
+          </div>
+          <KeyValue label="Model" value={latestPrediction ? `${latestPrediction.model_name ?? "Model"} ${latestPrediction.model_version ?? "version pending"}` : "No prediction yet"} />
+          <KeyValue label="Confidence" value={formatPercentValue(latestPrediction?.confidence_score)} />
+          <KeyValue label="Inference" value={<GlicoBadge tone={statusTone(latestPrediction?.inference_status)}>{latestPrediction?.inference_status ?? "Not available"}</GlicoBadge>} />
+          <KeyValue label="Reading quality" value={<GlicoBadge tone={qualityTone(data.latest?.quality_flag)}>{data.latest?.quality_flag ?? "No reading"}</GlicoBadge>} />
+          <KeyValue label="Reading timestamp" value={formatTimestamp(data.latest?.recorded_at)} />
+        </GlicoPanel>
+      </section>
+
+      <section className="grid gap-5 xl:grid-cols-[minmax(0,1.2fr)_420px]">
+        <GlicoPanel className="reveal-up p-5 sm:p-6" style={{ animationDelay: "120ms" }}>
+          <TrendChart trends={data.trends} />
+        </GlicoPanel>
+
+        <GlicoPanel className="reveal-up overflow-hidden" style={{ animationDelay: "160ms" }}>
+          <div className="border-b-2 border-[color:var(--line)] bg-[color:var(--sky)] p-5">
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <p className="label-text">Device lane</p>
+                <h2 className="mt-2 text-2xl font-black text-[color:var(--ink)]">Assigned readers</h2>
+              </div>
+              <DeviceMobile size={31} weight="bold" />
+            </div>
+          </div>
+
+          {data.devices.length === 0 ? (
+            <div className="p-5">
+              <StateBlock tone="slate" title="No active reader" description="Pair a reader from the devices screen before readings can attach to your subject profile." />
+            </div>
+          ) : (
+            <div className="divide-y-2 divide-[color:var(--line)]">
+              {data.devices.map((device) => (
+                <div key={device.device_assignment_id} className="grid gap-2 p-5">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0">
+                      <p className="text-lg font-black text-[color:var(--ink)]">{device.device_name || device.device_code}</p>
+                      <p className="mt-1 truncate font-mono text-xs text-[color:var(--ink-muted)]">{device.mqtt_topic}</p>
+                    </div>
+                    <GlicoBadge tone={statusTone(device.device_status)}>{device.device_status}</GlicoBadge>
+                  </div>
+                  <div className="flex flex-wrap gap-2 text-xs font-bold text-[color:var(--ink-muted)]">
+                    <span className="inline-flex items-center gap-1"><Clock size={14} weight="bold" /> {formatTimestamp(device.assigned_at)}</span>
+                    <span className="inline-flex items-center gap-1"><LinkSimple size={14} weight="bold" /> {truncateId(device.device_id)}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </GlicoPanel>
+      </section>
+
+      <section className="grid gap-5 md:grid-cols-3">
+        <StateBlock tone="mint" title="Freshness" description={freshness} icon={<Clock size={22} weight="bold" />} />
+        <StateBlock tone="sky" title="Data quality" description={data.latest?.quality_flag ?? "No reading has been received yet."} icon={<Drop size={22} weight="bold" />} />
+        <StateBlock tone="butter" title="Subject code" description={data.profile.subject.subject_code} icon={<DeviceMobile size={22} weight="bold" />} />
+      </section>
+    </div>
+  );
+}
+
+function OverviewSkeleton() {
+  return (
+    <div className="grid gap-7">
+      <SkeletonBlock className="h-28" />
+      <div className="grid gap-5 xl:grid-cols-[minmax(0,1.35fr)_390px]">
+        <SkeletonBlock className="h-80" />
+        <SkeletonBlock className="h-80" />
+      </div>
+      <div className="grid gap-5 xl:grid-cols-[minmax(0,1.2fr)_420px]">
+        <SkeletonBlock className="h-96" />
+        <SkeletonBlock className="h-96" />
+      </div>
+    </div>
+  );
+}
