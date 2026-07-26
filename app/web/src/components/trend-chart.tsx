@@ -1,6 +1,7 @@
 "use client";
 
-import { useMemo, useState, type FormEvent } from "react";
+import { CaretDown, CaretUp, FunnelSimple } from "@phosphor-icons/react";
+import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import type { PredictionTrendRow, SubjectDeviceRow } from "@/lib/api/types";
 import { formatDateLabel, formatGlucose, formatValue, toNumber } from "@/lib/utils";
 import { Field, GlicoBadge, GlicoButton, StateBlock } from "@/components/glicovia-ui";
@@ -34,6 +35,11 @@ type HoveredPoint = {
   maximum: string;
 };
 
+type ChartSize = {
+  width: number;
+  height: number;
+};
+
 function formatBucketLabel(value: string) {
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return "Unknown date";
@@ -44,8 +50,33 @@ function formatBucketLabel(value: string) {
   }).format(date);
 }
 
+function buildChartSize(width: number): ChartSize {
+  if (width < 420) return { width, height: 280 };
+  if (width < 768) return { width, height: 320 };
+  if (width < 1200) return { width, height: 380 };
+  return { width, height: 430 };
+}
+
 export function TrendChart({ trends, devices, filters, loading = false, onFilterChange, onApplyFilters, onResetFilters }: TrendChartProps) {
   const [hoveredPoint, setHoveredPoint] = useState<HoveredPoint | null>(null);
+  const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
+  const frameRef = useRef<HTMLDivElement | null>(null);
+  const [chartSize, setChartSize] = useState<ChartSize>({ width: 860, height: 430 });
+
+  useEffect(() => {
+    const node = frameRef.current;
+    if (!node) return;
+
+    const updateSize = () => {
+      const nextWidth = Math.max(280, node.clientWidth - 24);
+      setChartSize(buildChartSize(nextWidth));
+    };
+
+    updateSize();
+    const observer = new ResizeObserver(() => updateSize());
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, []);
 
   const values = useMemo(() => {
     return [...trends]
@@ -59,6 +90,16 @@ export function TrendChart({ trends, devices, filters, loading = false, onFilter
       .filter((point): point is { row: PredictionTrendRow; average: number; minimum: string; maximum: string } => point.average !== null);
   }, [trends]);
 
+  function handleApplyFilters(event: FormEvent<HTMLFormElement>) {
+    onApplyFilters(event);
+    setMobileFiltersOpen(false);
+  }
+
+  function handleResetFilters() {
+    onResetFilters();
+    setMobileFiltersOpen(false);
+  }
+
   if (values.length === 0) {
     return (
       <div className="grid gap-5">
@@ -66,9 +107,11 @@ export function TrendChart({ trends, devices, filters, loading = false, onFilter
           devices={devices}
           filters={filters}
           loading={loading}
+          mobileOpen={mobileFiltersOpen}
+          onToggleMobile={() => setMobileFiltersOpen((current) => !current)}
           onFilterChange={onFilterChange}
-          onApplyFilters={onApplyFilters}
-          onResetFilters={onResetFilters}
+          onApplyFilters={handleApplyFilters}
+          onResetFilters={handleResetFilters}
         />
         <StateBlock
           tone="slate"
@@ -85,9 +128,14 @@ export function TrendChart({ trends, devices, filters, loading = false, onFilter
   const axisMin = Math.max(0, Math.floor((min - span * 0.15) / 10) * 10);
   const axisMax = Math.ceil((max + span * 0.15) / 10) * 10;
   const axisSpan = Math.max(10, axisMax - axisMin);
-  const width = 860;
-  const height = 360;
-  const padding = { top: 28, right: 30, bottom: 70, left: 78 };
+  const width = chartSize.width;
+  const height = chartSize.height;
+  const padding = {
+    top: 32,
+    right: width < 480 ? 18 : 28,
+    bottom: width < 480 ? 54 : 70,
+    left: width < 480 ? 52 : 74,
+  };
 
   const points = values.map((point, index) => {
     const x = values.length === 1
@@ -108,9 +156,11 @@ export function TrendChart({ trends, devices, filters, loading = false, onFilter
         devices={devices}
         filters={filters}
         loading={loading}
+        mobileOpen={mobileFiltersOpen}
+        onToggleMobile={() => setMobileFiltersOpen((current) => !current)}
         onFilterChange={onFilterChange}
-        onApplyFilters={onApplyFilters}
-        onResetFilters={onResetFilters}
+        onApplyFilters={handleApplyFilters}
+        onResetFilters={handleResetFilters}
       />
 
       <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_220px] lg:items-start">
@@ -136,11 +186,14 @@ export function TrendChart({ trends, devices, filters, loading = false, onFilter
         </div>
       </div>
 
-      <div className="relative overflow-hidden rounded-[8px] border-2 border-[color:var(--line)] bg-[color:var(--surface-soft)] p-4">
+      <div ref={frameRef} className="relative overflow-hidden rounded-[8px] border-2 border-[color:var(--line)] bg-[color:var(--surface-soft)] p-3 sm:p-4">
         {hoveredPoint ? (
           <div
-            className="pointer-events-none absolute z-10 min-w-44 rounded-[8px] border-2 border-[color:var(--line)] bg-[color:var(--canvas)] px-3 py-2 text-xs font-bold text-[color:var(--ink)] shadow-[3px_3px_0_var(--line)]"
-            style={{ left: Math.max(12, Math.min(hoveredPoint.x - 64, width - 180)), top: Math.max(12, hoveredPoint.y - 72) }}
+            className="pointer-events-none absolute z-10 min-w-40 rounded-[8px] border-2 border-[color:var(--line)] bg-[color:var(--canvas)] px-3 py-2 text-[11px] font-bold text-[color:var(--ink)] shadow-[3px_3px_0_var(--line)] sm:min-w-44 sm:text-xs"
+            style={{
+              left: `${Math.max(12, Math.min(hoveredPoint.x - 72, width - 188))}px`,
+              top: `${Math.max(12, hoveredPoint.y - 92)}px`
+            }}
           >
             <p>{hoveredPoint.label}</p>
             <p className="mt-1">Average: {formatGlucose(hoveredPoint.average)}</p>
@@ -149,14 +202,21 @@ export function TrendChart({ trends, devices, filters, loading = false, onFilter
           </div>
         ) : null}
 
-        <svg viewBox={`0 0 ${width} ${height}`} role="img" aria-label="Estimated blood glucose trend" className="h-[360px] w-full">
+        <svg
+          width={width}
+          height={height}
+          viewBox={`0 0 ${width} ${height}`}
+          role="img"
+          aria-label="Estimated blood glucose trend"
+          className="block h-auto w-full"
+        >
           <text x={padding.left} y={16} className="fill-[color:var(--ink-muted)] text-[12px] font-bold">Blood glucose (mg/dL)</text>
           {yTicks.map((tick) => {
             const y = padding.top + (1 - (tick - axisMin) / axisSpan) * (height - padding.top - padding.bottom);
             return (
               <g key={tick}>
                 <line x1={padding.left} x2={width - padding.right} y1={y} y2={y} stroke="rgba(23,19,15,0.18)" strokeWidth="2" />
-                <text x={padding.left - 12} y={y + 4} textAnchor="end" className="fill-[color:var(--ink-muted)] text-[11px] font-bold">
+                <text x={padding.left - 10} y={y + 4} textAnchor="end" className="fill-[color:var(--ink-muted)] text-[11px] font-bold">
                   {Math.round(tick)}
                 </text>
               </g>
@@ -202,46 +262,67 @@ export function TrendChart({ trends, devices, filters, loading = false, onFilter
   );
 }
 
-function TrendControls({ devices, filters, loading, onFilterChange, onApplyFilters, onResetFilters }: {
+function TrendControls({ devices, filters, loading, mobileOpen, onToggleMobile, onFilterChange, onApplyFilters, onResetFilters }: {
   devices: SubjectDeviceRow[];
   filters: PredictionTrendFilters;
   loading: boolean;
+  mobileOpen: boolean;
+  onToggleMobile: () => void;
   onFilterChange: (next: PredictionTrendFilters) => void;
   onApplyFilters: (event: FormEvent<HTMLFormElement>) => void;
   onResetFilters: () => void;
 }) {
   return (
-    <form onSubmit={onApplyFilters} className="grid gap-4 rounded-[8px] border-2 border-[color:var(--line)] bg-[color:var(--canvas)] p-4 lg:grid-cols-[minmax(190px,1fr)_150px_150px_150px_auto_auto] lg:items-end">
-      <Field label="Device">
-        <select
-          className="glico-input"
-          value={filters.deviceId}
-          onChange={(event) => onFilterChange({ ...filters, deviceId: event.target.value })}
-        >
-          <option value="">All active devices</option>
-          {devices.map((device) => (
-            <option key={device.device_id} value={device.device_id}>{device.device_name || device.device_code}</option>
-          ))}
-        </select>
-      </Field>
-      <Field label="History view">
-        <select
-          className="glico-input"
-          value={filters.range}
-          onChange={(event) => onFilterChange({ ...filters, range: event.target.value as TrendWindow })}
-        >
-          <option value="week">Weekly</option>
-          <option value="month">Monthly</option>
-        </select>
-      </Field>
-      <Field label="From">
-        <input className="glico-input" type="date" value={filters.from} onChange={(event) => onFilterChange({ ...filters, from: event.target.value })} />
-      </Field>
-      <Field label="To">
-        <input className="glico-input" type="date" value={filters.to} onChange={(event) => onFilterChange({ ...filters, to: event.target.value })} />
-      </Field>
-      <GlicoButton type="submit" variant="ink" disabled={loading}>Apply</GlicoButton>
-      <GlicoButton type="button" variant="secondary" disabled={loading} onClick={onResetFilters}>Reset</GlicoButton>
-    </form>
+    <div className="grid gap-3">
+      <div className="lg:hidden">
+        <GlicoButton type="button" variant="secondary" className="w-full justify-between" onClick={onToggleMobile}>
+          <span className="inline-flex items-center gap-2">
+            <FunnelSimple size={18} weight="bold" />
+            Chart filters
+          </span>
+          {mobileOpen ? <CaretUp size={18} weight="bold" /> : <CaretDown size={18} weight="bold" />}
+        </GlicoButton>
+      </div>
+
+      <form
+        onSubmit={onApplyFilters}
+        className={[
+          "rounded-[8px] border-2 border-[color:var(--line)] bg-[color:var(--canvas)] p-4",
+          "grid gap-4 lg:grid-cols-[minmax(190px,1fr)_150px_150px_150px_auto_auto] lg:items-end",
+          mobileOpen ? "grid" : "hidden lg:grid"
+        ].join(" ")}
+      >
+        <Field label="Device">
+          <select
+            className="glico-input"
+            value={filters.deviceId}
+            onChange={(event) => onFilterChange({ ...filters, deviceId: event.target.value })}
+          >
+            <option value="">All active devices</option>
+            {devices.map((device) => (
+              <option key={device.device_id} value={device.device_id}>{device.device_name || device.device_code}</option>
+            ))}
+          </select>
+        </Field>
+        <Field label="History view">
+          <select
+            className="glico-input"
+            value={filters.range}
+            onChange={(event) => onFilterChange({ ...filters, range: event.target.value as TrendWindow })}
+          >
+            <option value="week">Weekly</option>
+            <option value="month">Monthly</option>
+          </select>
+        </Field>
+        <Field label="From">
+          <input className="glico-input" type="date" value={filters.from} onChange={(event) => onFilterChange({ ...filters, from: event.target.value })} />
+        </Field>
+        <Field label="To">
+          <input className="glico-input" type="date" value={filters.to} onChange={(event) => onFilterChange({ ...filters, to: event.target.value })} />
+        </Field>
+        <GlicoButton type="submit" variant="ink" disabled={loading}>Apply</GlicoButton>
+        <GlicoButton type="button" variant="secondary" disabled={loading} onClick={onResetFilters}>Reset</GlicoButton>
+      </form>
+    </div>
   );
 }

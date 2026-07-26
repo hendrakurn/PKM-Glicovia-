@@ -1,0 +1,50 @@
+- main [ref=f5e2]:
+  - generic [ref=f5e3]:
+    - generic [ref=f5e4]:
+      - generic [ref=f5e5]:
+        - generic [ref=f5e6]:
+          - generic [ref=f5e7]: GV
+          - generic [ref=f5e8]:
+            - paragraph [ref=f5e9]: GLICOVIA Express
+            - paragraph [ref=f5e10]: Saliva glucose monitoring
+        - generic [ref=f5e11]: Checking API
+      - generic [ref=f5e14]:
+        - generic [ref=f5e15]:
+          - generic [ref=f5e16]:
+            - generic [ref=f5e17]: Patient-first monitor
+            - heading "Understand the latest saliva glucose signal at a glance." [level=1] [ref=f5e20]
+            - paragraph [ref=f5e21]: GLICOVIA Express brings current readings, device state, freshness, and model context into one calm health view.
+          - generic [ref=f5e22]:
+            - generic [ref=f5e23]:
+              - paragraph [ref=f5e24]: Reading
+              - paragraph [ref=f5e25]: Current signal
+            - generic [ref=f5e26]:
+              - paragraph [ref=f5e27]: Trust
+              - paragraph [ref=f5e28]: Model context
+            - generic [ref=f5e29]:
+              - paragraph [ref=f5e30]: Device
+              - paragraph [ref=f5e31]: Freshness
+        - generic [ref=f5e33]:
+          - generic [ref=f5e34]:
+            - paragraph [ref=f5e35]: Primary view
+            - paragraph [ref=f5e36]: Today, then detail.
+            - paragraph [ref=f5e37]: The dashboard leads with meaning before raw rows.
+          - generic [ref=f5e38]:
+            - paragraph [ref=f5e39]: Reviewer layer
+            - paragraph [ref=f5e40]: Predictions, models, confidence, and IDs stay visible for audit work.
+    - generic [ref=f5e41]:
+      - generic [ref=f5e42]:
+        - button "login" [pressed] [ref=f5e43]
+        - button "register" [ref=f5e44]
+      - generic [ref=f5e45]:
+        - generic [ref=f5e46]:
+          - generic [ref=f5e47]: Email
+          - textbox "Email" [ref=f5e48]:
+            - /placeholder: you@example.com
+        - generic [ref=f5e49]:
+          - generic [ref=f5e50]: Password
+          - generic [ref=f5e51]:
+            - textbox "Password Show password" [ref=f5e52]:
+              - /placeholder: Your password
+            - button "Show password" [ref=f5e53]
+        - button "Enter dashboard" [disabled]

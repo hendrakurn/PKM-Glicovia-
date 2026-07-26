@@ -2,10 +2,10 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useState, type FormEvent } from "react";
-import { ArrowClockwise, Brain, Clock, DeviceMobile, Drop, LinkSimple, WarningCircle } from "@phosphor-icons/react";
+import { ArrowClockwise, Brain, Clock, DeviceMobile, Drop, WarningCircle } from "@phosphor-icons/react";
 import { api, ApiError } from "@/lib/api/client";
 import type { AuthProfile, PredictionResultRow, PredictionTrendRow, SensorReadingRow, SubjectDeviceRow } from "@/lib/api/types";
-import { categoryTone, dateInputToIso, formatGlucose, formatPercentValue, formatTimestamp, qualityTone, readingMeaning, relativeFreshness, statusTone, toNumber, truncateId } from "@/lib/utils";
+import { categoryTone, dateInputToIso, formatGlucose, formatPercentValue, formatTimestamp, qualityTone, readingMeaning, relativeFreshness, statusTone, toNumber } from "@/lib/utils";
 import { GlicoBadge, GlicoButton, GlicoPanel, Heartbeat, KeyValue, PageHeader, SkeletonBlock, StateBlock, glicoButtonClasses } from "@/components/glicovia-ui";
 import { useAuth } from "@/components/auth-provider";
 import { TrendChart, type PredictionTrendFilters } from "@/components/trend-chart";
@@ -207,23 +207,12 @@ export function OverviewClient() {
           </div>
         </GlicoPanel>
 
-        <GlicoPanel className="reveal-up p-5" style={{ animationDelay: "70ms" }}>
-          <div className="mb-4 flex items-start justify-between gap-3">
-            <div>
-              <p className="label-text">Trust signals</p>
-              <h2 className="mt-2 text-2xl font-black text-[color:var(--ink)]">Why this reading is believable</h2>
-            </div>
-            <Brain size={30} weight="bold" />
-          </div>
-          <KeyValue label="Model" value={latestPrediction ? `${latestPrediction.model_name ?? "Model"} ${latestPrediction.model_version ?? "version pending"}` : "No prediction yet"} />
-          <KeyValue label="Confidence" value={formatPercentValue(latestPrediction?.confidence_score)} />
-          <KeyValue label="Inference" value={<GlicoBadge tone={statusTone(latestPrediction?.inference_status)}>{latestPrediction?.inference_status ?? "Not available"}</GlicoBadge>} />
-          <KeyValue label="Reading quality" value={<GlicoBadge tone={qualityTone(data.latest?.quality_flag)}>{data.latest?.quality_flag ?? "No reading"}</GlicoBadge>} />
-          <KeyValue label="Reading timestamp" value={formatTimestamp(data.latest?.recorded_at)} />
-        </GlicoPanel>
+        <div className="hidden md:block">
+          <TrustSignalsPanel latest={data.latest} latestPrediction={latestPrediction} />
+        </div>
       </section>
 
-      <section className="grid gap-5 xl:grid-cols-[minmax(0,1.2fr)_420px]">
+      <section className="grid gap-5">
         <GlicoPanel className="reveal-up p-5 sm:p-6" style={{ animationDelay: "120ms" }}>
           <TrendChart
             trends={data.trends}
@@ -236,41 +225,9 @@ export function OverviewClient() {
           />
         </GlicoPanel>
 
-        <GlicoPanel className="reveal-up overflow-hidden" style={{ animationDelay: "160ms" }}>
-          <div className="border-b-2 border-[color:var(--line)] bg-[color:var(--sky)] p-5">
-            <div className="flex items-center justify-between gap-3">
-              <div>
-                <p className="label-text">Device lane</p>
-                <h2 className="mt-2 text-2xl font-black text-[color:var(--ink)]">Assigned readers</h2>
-              </div>
-              <DeviceMobile size={31} weight="bold" />
-            </div>
-          </div>
-
-          {data.devices.length === 0 ? (
-            <div className="p-5">
-              <StateBlock tone="slate" title="No active reader" description="Pair a reader from the devices screen before readings can attach to your subject profile." />
-            </div>
-          ) : (
-            <div className="divide-y-2 divide-[color:var(--line)]">
-              {data.devices.map((device) => (
-                <div key={device.device_assignment_id} className="grid gap-2 p-5">
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="min-w-0">
-                      <p className="text-lg font-black text-[color:var(--ink)]">{device.device_name || device.device_code}</p>
-                      <p className="mt-1 truncate font-mono text-xs text-[color:var(--ink-muted)]">{device.mqtt_topic}</p>
-                    </div>
-                    <GlicoBadge tone={statusTone(device.device_status)}>{device.device_status}</GlicoBadge>
-                  </div>
-                  <div className="flex flex-wrap gap-2 text-xs font-bold text-[color:var(--ink-muted)]">
-                    <span className="inline-flex items-center gap-1"><Clock size={14} weight="bold" /> {formatTimestamp(device.assigned_at)}</span>
-                    <span className="inline-flex items-center gap-1"><LinkSimple size={14} weight="bold" /> {truncateId(device.device_id)}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </GlicoPanel>
+        <div className="md:hidden">
+          <TrustSignalsPanel latest={data.latest} latestPrediction={latestPrediction} />
+        </div>
       </section>
 
       <section className="grid gap-5 md:grid-cols-3">
@@ -282,18 +239,35 @@ export function OverviewClient() {
   );
 }
 
+function TrustSignalsPanel({ latest, latestPrediction }: { latest: SensorReadingRow | null; latestPrediction: PredictionResultRow | null }) {
+  return (
+    <GlicoPanel className="reveal-up p-5" style={{ animationDelay: "70ms" }}>
+      <div className="mb-4 flex items-start justify-between gap-3">
+        <div>
+          <p className="label-text">Trust signals</p>
+          <h2 className="mt-2 text-2xl font-black text-[color:var(--ink)]">Why this reading is believable</h2>
+        </div>
+        <Brain size={30} weight="bold" />
+      </div>
+      <KeyValue label="Model" value={latestPrediction ? `${latestPrediction.model_name ?? "Model"} ${latestPrediction.model_version ?? "version pending"}` : "No prediction yet"} />
+      <KeyValue label="Confidence" value={formatPercentValue(latestPrediction?.confidence_score)} />
+      <KeyValue label="Inference" value={<GlicoBadge tone={statusTone(latestPrediction?.inference_status)}>{latestPrediction?.inference_status ?? "Not available"}</GlicoBadge>} />
+      <KeyValue label="Reading quality" value={<GlicoBadge tone={qualityTone(latest?.quality_flag)}>{latest?.quality_flag ?? "No reading"}</GlicoBadge>} />
+      <KeyValue label="Reading timestamp" value={formatTimestamp(latest?.recorded_at)} />
+    </GlicoPanel>
+  );
+}
+
 function OverviewSkeleton() {
   return (
     <div className="grid gap-7">
       <SkeletonBlock className="h-28" />
       <div className="grid gap-5 xl:grid-cols-[minmax(0,1.35fr)_390px]">
         <SkeletonBlock className="h-80" />
-        <SkeletonBlock className="h-80" />
+        <SkeletonBlock className="hidden h-80 md:block" />
       </div>
-      <div className="grid gap-5 xl:grid-cols-[minmax(0,1.2fr)_420px]">
-        <SkeletonBlock className="h-96" />
-        <SkeletonBlock className="h-96" />
-      </div>
+      <SkeletonBlock className="h-[620px]" />
+      <SkeletonBlock className="h-80 md:hidden" />
     </div>
   );
 }

@@ -1,0 +1,24 @@
+{
+  "model_type": "SVR",
+  "evaluation_timestamp": "2026-07-04T02:16:38Z",
+  "regression_metrics": {
+    "rmse": 23.82322621852433,
+    "rmse_percent_of_mean": 22.476743633136838,
+    "mae": 10.942304345973527,
+    "mae_percent_of_mean": 10.32384813392586,
+    "r2": 0.9124180927441372,
+    "mean_target": 105.99055898561039
+  },
+  "classification_metrics": {},
+  "clinical_assessment": {
+    "clinical_status": "PASS",
+    "meets_thresholds": {
+      "r2": true,
+      "rmse": true,
+      "mae": true
+    },
+    "issues": [],
+    "recommendations": []
+  },
+  "overall_status": "PASS"
+}

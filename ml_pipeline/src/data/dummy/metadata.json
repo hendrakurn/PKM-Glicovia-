@@ -1,0 +1,26 @@
+{
+  "total_samples": 150,
+  "class_distribution": {
+    "Normal": 60,
+    "Pre-Diabetes": 52,
+    "Diabetes": 38
+  },
+  "feature_ranges": {
+    "glucose_saliva": [
+      0.1,
+      10.0
+    ],
+    "ph_value": [
+      4.0,
+      7.5479
+    ],
+    "fructosamine_umol_l": [
+      182.7944,
+      500.0
+    ]
+  },
+  "noise_level": "Gaussian(sigma=0.1)",
+  "outlier_count": 4,
+  "random_state": 42,
+  "generation_timestamp": "2026-07-26T04:47:20Z"
+}

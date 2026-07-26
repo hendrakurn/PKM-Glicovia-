@@ -1,0 +1,224 @@
+{
+  "pipeline_timestamp": "2026-07-04T01:59:36Z",
+  "data_generation": {
+    "status": "loaded",
+    "path": "/home/hendra/projects/pkmGlico/ml_pipeline/src/data/dummy/generated_data.csv",
+    "n_samples": 150
+  },
+  "preprocessing": {
+    "train_samples": 97,
+    "test_samples": 25,
+    "feature_names": [
+      "glucose_saliva",
+      "ph_value",
+      "viscosity_cP"
+    ],
+    "X_train_path": "/home/hendra/projects/pkmGlico/ml_pipeline/src/data/processed/X_train.npy",
+    "X_test_path": "/home/hendra/projects/pkmGlico/ml_pipeline/src/data/processed/X_test.npy",
+    "y_train_path": "/home/hendra/projects/pkmGlico/ml_pipeline/src/data/processed/y_train.npy",
+    "y_test_path": "/home/hendra/projects/pkmGlico/ml_pipeline/src/data/processed/y_test.npy",
+    "scaler_params_path": "/home/hendra/projects/pkmGlico/ml_pipeline/src/data/processed/scaler_params.json"
+  },
+  "training": {
+    "best_model_path": "/home/hendra/projects/pkmGlico/ml_pipeline/src/models/best_model.pkl",
+    "experiment_log_path": "/home/hendra/projects/pkmGlico/ml_pipeline/src/models/experiment_log.json",
+    "best_params": {
+      "C": 100,
+      "epsilon": 0.1,
+      "gamma": 0.1
+    },
+    "train_r2": 0.9594959737488141,
+    "test_r2": 0.9124180927441372,
+    "train_rmse": 17.2801320275083,
+    "test_rmse": 23.82322621852433,
+    "train_mae": 6.290172948445043,
+    "test_mae": 10.942304345973527,
+    "overfitting_detected": false,
+    "cv_results": [
+      {
+        "fold": 0,
+        "params": {
+          "C": 100,
+          "epsilon": 0.1,
+          "gamma": 0.1
+        },
+        "rmse": 9.147796299405462,
+        "mae": 6.694951645136877,
+        "r2": 0.9819602541778446,
+        "accuracy": 1.0,
+        "f1_macro": 1.0,
+        "confusion_matrix": [
+          [
+            10,
+            0,
+            0
+          ],
+          [
+            0,
+            2,
+            0
+          ],
+          [
+            0,
+            0,
+            8
+          ]
+        ],
+        "runtime_seconds": 0.003
+      },
+      {
+        "fold": 1,
+        "params": {
+          "C": 100,
+          "epsilon": 0.1,
+          "gamma": 0.1
+        },
+        "rmse": 22.78822251356528,
+        "mae": 11.523454699844715,
+        "r2": 0.9617750334030158,
+        "accuracy": 0.95,
+        "f1_macro": 0.8765432098765432,
+        "confusion_matrix": [
+          [
+            13,
+            0,
+            0
+          ],
+          [
+            1,
+            1,
+            0
+          ],
+          [
+            0,
+            0,
+            5
+          ]
+        ],
+        "runtime_seconds": 0.003
+      },
+      {
+        "fold": 2,
+        "params": {
+          "C": 100,
+          "epsilon": 0.1,
+          "gamma": 0.1
+        },
+        "rmse": 7.00992464754085,
+        "mae": 5.473848470456144,
+        "r2": 0.9874441927648568,
+        "accuracy": 1.0,
+        "f1_macro": 1.0,
+        "confusion_matrix": [
+          [
+            15,
+            0
+          ],
+          [
+            0,
+            4
+          ]
+        ],
+        "runtime_seconds": 0.002
+      },
+      {
+        "fold": 3,
+        "params": {
+          "C": 100,
+          "epsilon": 0.1,
+          "gamma": 0.1
+        },
+        "rmse": 7.804010225006675,
+        "mae": 5.082077408027863,
+        "r2": 0.9800341987756687,
+        "accuracy": 0.8947368421052632,
+        "f1_macro": 0.77336860670194,
+        "confusion_matrix": [
+          [
+            13,
+            0,
+            0
+          ],
+          [
+            1,
+            1,
+            1
+          ],
+          [
+            0,
+            0,
+            3
+          ]
+        ],
+        "runtime_seconds": 0.002
+      },
+      {
+        "fold": 4,
+        "params": {
+          "C": 100,
+          "epsilon": 0.1,
+          "gamma": 0.1
+        },
+        "rmse": 36.006592880763044,
+        "mae": 15.742904645198905,
+        "r2": 0.8707592631441164,
+        "accuracy": 1.0,
+        "f1_macro": 1.0,
+        "confusion_matrix": [
+          [
+            9,
+            0,
+            0
+          ],
+          [
+            0,
+            2,
+            0
+          ],
+          [
+            0,
+            0,
+            8
+          ]
+        ],
+        "runtime_seconds": 0.001
+      }
+    ]
+  },
+  "evaluation": {
+    "evaluation_report_path": "/home/hendra/projects/pkmGlico/ml_pipeline/src/evaluation/evaluation_report.json",
+    "predictions_path": "/home/hendra/projects/pkmGlico/ml_pipeline/src/evaluation/predictions.npy",
+    "model_type": "SVR",
+    "regression_metrics": {
+      "rmse": 23.82322621852433,
+      "rmse_percent_of_mean": 22.476743633136838,
+      "mae": 10.942304345973527,
+      "mae_percent_of_mean": 10.32384813392586,
+      "r2": 0.9124180927441372,
+      "mean_target": 105.99055898561039
+    },
+    "classification_metrics": {},
+    "clinical_assessment": {
+      "clinical_status": "PASS",
+      "meets_thresholds": {
+        "r2": true,
+        "rmse": true,
+        "mae": true
+      },
+      "issues": [],
+      "recommendations": []
+    },
+    "y_test_path": "/home/hendra/projects/pkmGlico/ml_pipeline/src/data/processed/y_test.npy",
+    "y_pred_path": "/home/hendra/projects/pkmGlico/ml_pipeline/src/evaluation/predictions.npy"
+  },
+  "pipeline_status": "SUCCESS",
+  "pipeline_summary": {
+    "total_samples": 150,
+    "train_samples": 97,
+    "test_samples": 25,
+    "model_type": "SVR-rbf",
+    "train_r2": 0.9594959737488141,
+    "test_r2": 0.9124180927441372,
+    "clinical_status": "PASS"
+  }
+}

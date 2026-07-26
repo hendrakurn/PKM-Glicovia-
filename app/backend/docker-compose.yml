@@ -1,0 +1,21 @@
+services:
+  db:
+    image: postgres:16
+    container_name: pkmglico-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: pkmglico
+    ports:
+      - "5433:5432"
+    volumes:
+      - pkmglico_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d pkmglico"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  pkmglico_pgdata:

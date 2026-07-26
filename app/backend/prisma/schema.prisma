@@ -1,0 +1,198 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum user_role {
+  subject
+  admin
+}
+
+enum device_status {
+  unpaired
+  paired
+  offline
+  online
+  inactive
+}
+
+enum assignment_status {
+  active
+  ended
+}
+
+enum pairing_status {
+  pending
+  used
+  expired
+  revoked
+}
+
+enum quality_flag {
+  valid
+  suspect
+  incomplete
+}
+
+enum inference_status {
+  pending
+  success
+  failed
+}
+
+enum model_status {
+  training
+  deployed
+  archived
+}
+
+model User {
+  id           String    @id @default(uuid()) @db.Uuid
+  email        String    @unique @db.VarChar
+  passwordHash String    @map("password_hash") @db.VarChar
+  fullName     String?   @map("full_name") @db.VarChar
+  role         user_role @default(subject)
+  isActive     Boolean   @default(true) @map("is_active")
+  lastLoginAt  DateTime? @map("last_login_at") @db.Timestamptz(6)
+  createdAt    DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt    DateTime  @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  subject Subject?
+
+  @@map("users")
+}
+
+model Subject {
+  id          String   @id @default(uuid()) @db.Uuid
+  userId      String   @unique @map("user_id") @db.Uuid
+  subjectCode String   @unique @map("subject_code") @db.VarChar
+  displayName String?  @map("display_name") @db.VarChar
+  age         Int?
+  sex         String?  @db.VarChar
+  notes       String?
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt   DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  user              User               @relation(fields: [userId], references: [id], onUpdate: Cascade, onDelete: Restrict)
+  deviceAssignments DeviceAssignment[]
+  sensorReadings    SensorReading[]
+
+  @@map("subjects")
+}
+
+model Device {
+  id              String        @id @default(uuid()) @db.Uuid
+  deviceCode      String        @unique @map("device_code") @db.VarChar
+  name            String?       @db.VarChar
+  mqttTopic       String        @unique @map("mqtt_topic") @db.VarChar
+  status          device_status @default(unpaired)
+  firmwareVersion String?       @map("firmware_version") @db.VarChar
+  lastSeenAt      DateTime?     @map("last_seen_at") @db.Timestamptz(6)
+  createdAt       DateTime      @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt       DateTime      @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  pairingTokens     PairingToken[]
+  deviceAssignments DeviceAssignment[]
+  sensorReadings    SensorReading[]
+
+  @@map("devices")
+}
+
+model PairingToken {
+  id        String         @id @default(uuid()) @db.Uuid
+  deviceId  String         @map("device_id") @db.Uuid
+  token     String         @unique @db.VarChar
+  qrPayload String         @map("qr_payload")
+  status    pairing_status @default(pending)
+  expiresAt DateTime       @map("expires_at") @db.Timestamptz(6)
+  usedAt    DateTime?      @map("used_at") @db.Timestamptz(6)
+  revokedAt DateTime?      @map("revoked_at") @db.Timestamptz(6)
+  createdAt DateTime       @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  device            Device             @relation(fields: [deviceId], references: [id], onUpdate: Cascade, onDelete: Restrict)
+  deviceAssignments DeviceAssignment[]
+
+  @@map("pairing_tokens")
+}
+
+model DeviceAssignment {
+  id             String            @id @default(uuid()) @db.Uuid
+  deviceId       String            @map("device_id") @db.Uuid
+  subjectId      String            @map("subject_id") @db.Uuid
+  pairingTokenId String?           @map("pairing_token_id") @db.Uuid
+  status         assignment_status @default(active)
+  assignedAt     DateTime          @map("assigned_at") @db.Timestamptz(6)
+  unassignedAt   DateTime?         @map("unassigned_at") @db.Timestamptz(6)
+  createdAt      DateTime          @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  device         Device          @relation(fields: [deviceId], references: [id], onUpdate: Cascade, onDelete: Restrict)
+  subject        Subject         @relation(fields: [subjectId], references: [id], onUpdate: Cascade, onDelete: Restrict)
+  pairingToken   PairingToken?   @relation(fields: [pairingTokenId], references: [id], onUpdate: Cascade, onDelete: SetNull)
+  sensorReadings SensorReading[]
+
+  @@index([deviceId])
+  @@index([subjectId])
+  @@map("device_assignments")
+}
+
+model SensorReading {
+  id                 String       @id @default(uuid()) @db.Uuid
+  deviceId           String       @map("device_id") @db.Uuid
+  subjectId          String?      @map("subject_id") @db.Uuid
+  deviceAssignmentId String?      @map("device_assignment_id") @db.Uuid
+  recordedAt         DateTime     @map("recorded_at") @db.Timestamptz(6)
+  receivedAt         DateTime     @map("received_at") @db.Timestamptz(6)
+  ph                 Decimal?     @db.Decimal(6, 3)
+  fructosamine       Decimal?     @db.Decimal(10, 3)
+  salivaryGlucose    Decimal?     @map("salivary_glucose") @db.Decimal(10, 3)
+  rawPayload         Json         @map("raw_payload") @db.JsonB
+  qualityFlag        quality_flag @default(valid) @map("quality_flag")
+  createdAt          DateTime     @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  device            Device             @relation(fields: [deviceId], references: [id], onUpdate: Cascade, onDelete: Restrict)
+  subject           Subject?           @relation(fields: [subjectId], references: [id], onUpdate: Cascade, onDelete: SetNull)
+  deviceAssignment  DeviceAssignment?  @relation(fields: [deviceAssignmentId], references: [id], onUpdate: Cascade, onDelete: SetNull)
+  predictionResults PredictionResult[]
+
+  @@index([subjectId, recordedAt(sort: Desc)])
+  @@index([deviceId, recordedAt(sort: Desc)])
+  @@map("sensor_readings")
+}
+
+model ModelVersion {
+  id          String       @id @default(uuid()) @db.Uuid
+  modelName   String       @map("model_name") @db.VarChar
+  version     String       @db.VarChar
+  status      model_status @default(training)
+  artifactUrl String?      @map("artifact_url")
+  trainedAt   DateTime?    @map("trained_at") @db.Timestamptz(6)
+  deployedAt  DateTime?    @map("deployed_at") @db.Timestamptz(6)
+  notes       String?
+  createdAt   DateTime     @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  predictionResults PredictionResult[]
+
+  @@unique([modelName, version])
+  @@map("model_versions")
+}
+
+model PredictionResult {
+  id               String           @id @default(uuid()) @db.Uuid
+  sensorReadingId  String           @map("sensor_reading_id") @db.Uuid
+  modelVersionId   String           @map("model_version_id") @db.Uuid
+  glucoseEstimate  Decimal?         @map("glucose_estimate") @db.Decimal(10, 3)
+  clinicalCategory String?          @map("clinical_category") @db.VarChar
+  confidenceScore  Decimal?         @map("confidence_score") @db.Decimal(5, 4)
+  inferenceStatus  inference_status @default(pending) @map("inference_status")
+  predictedAt      DateTime?        @map("predicted_at") @db.Timestamptz(6)
+  createdAt        DateTime         @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  sensorReading SensorReading @relation(fields: [sensorReadingId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  modelVersion  ModelVersion  @relation(fields: [modelVersionId], references: [id], onUpdate: Cascade, onDelete: Restrict)
+
+  @@map("prediction_results")
+}
