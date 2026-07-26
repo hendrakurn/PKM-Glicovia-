@@ -1,22 +1,56 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type FormEvent } from "react";
 import { ArrowClockwise, Brain, Clock, DeviceMobile, Drop, LinkSimple, WarningCircle } from "@phosphor-icons/react";
 import { api, ApiError } from "@/lib/api/client";
-import type { AuthProfile, PredictionResultRow, ReadingTrendRow, SensorReadingRow, SubjectDeviceRow } from "@/lib/api/types";
-import { categoryTone, formatGlucose, formatPercentValue, formatTimestamp, qualityTone, readingMeaning, relativeFreshness, statusTone, toNumber, truncateId } from "@/lib/utils";
+import type { AuthProfile, PredictionResultRow, PredictionTrendRow, SensorReadingRow, SubjectDeviceRow } from "@/lib/api/types";
+import { categoryTone, dateInputToIso, formatGlucose, formatPercentValue, formatTimestamp, qualityTone, readingMeaning, relativeFreshness, statusTone, toNumber, truncateId } from "@/lib/utils";
 import { GlicoBadge, GlicoButton, GlicoPanel, Heartbeat, KeyValue, PageHeader, SkeletonBlock, StateBlock, glicoButtonClasses } from "@/components/glicovia-ui";
 import { useAuth } from "@/components/auth-provider";
-import { TrendChart } from "@/components/trend-chart";
+import { TrendChart, type PredictionTrendFilters } from "@/components/trend-chart";
 
 type OverviewData = {
   profile: AuthProfile;
   latest: SensorReadingRow | null;
-  trends: ReadingTrendRow[];
+  latestPrediction: PredictionResultRow | null;
+  trends: PredictionTrendRow[];
   devices: SubjectDeviceRow[];
-  predictions: PredictionResultRow[];
 };
+
+const initialTrendFilters: PredictionTrendFilters = {
+  deviceId: "",
+  range: "week",
+  from: "",
+  to: "",
+};
+
+function startOfDayIso(date: Date) {
+  const value = new Date(date);
+  value.setHours(0, 0, 0, 0);
+  return value.toISOString();
+}
+
+function endOfDayIso(date: Date) {
+  const value = new Date(date);
+  value.setHours(23, 59, 59, 999);
+  return value.toISOString();
+}
+
+function buildTrendQuery(filters: PredictionTrendFilters) {
+  const now = new Date();
+  const daysBack = filters.range === "month" ? 29 : 6;
+  const fromDate = new Date(now);
+  fromDate.setDate(now.getDate() - daysBack);
+
+  return {
+    device_id: filters.deviceId || undefined,
+    from: filters.from ? dateInputToIso(filters.from) : startOfDayIso(fromDate),
+    to: filters.to ? dateInputToIso(filters.to, true) : endOfDayIso(now),
+    bucket: filters.range === "month" ? "week" as const : "day" as const,
+    limit: filters.range === "month" ? 8 : 7,
+  };
+}
 
 export function OverviewClient() {
   const { token } = useAuth();
@@ -24,6 +58,8 @@ export function OverviewClient() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [refreshKey, setRefreshKey] = useState(0);
+  const [trendFilters, setTrendFilters] = useState<PredictionTrendFilters>(initialTrendFilters);
+  const [appliedTrendFilters, setAppliedTrendFilters] = useState<PredictionTrendFilters>(initialTrendFilters);
 
   useEffect(() => {
     if (!token) return;
@@ -34,12 +70,13 @@ export function OverviewClient() {
       try {
         setLoading(true);
         setError(null);
+        const trendQuery = buildTrendQuery(appliedTrendFilters);
         const profile = await api.me(authToken);
-        const [latestResult, trendsResult, devicesResult, predictionsResult] = await Promise.allSettled([
-          api.latestReading({}, authToken),
-          api.readingTrends({ bucket: "hour", limit: 16 }, authToken),
+        const [latestResult, latestPredictionResult, trendsResult, devicesResult] = await Promise.allSettled([
+          api.latestReading({ device_id: appliedTrendFilters.deviceId || undefined }, authToken),
+          api.myLatestPrediction({ device_id: appliedTrendFilters.deviceId || undefined }, authToken),
+          api.myPredictionTrends(trendQuery, authToken),
           api.myDevices(authToken),
-          api.predictions({ limit: 5 }),
         ]);
 
         if (!active) return;
@@ -51,15 +88,22 @@ export function OverviewClient() {
           throw latestResult.reason;
         }
 
+        let latestPrediction: PredictionResultRow | null = null;
+        if (latestPredictionResult.status === "fulfilled") {
+          latestPrediction = latestPredictionResult.value.prediction;
+        } else if (!(latestPredictionResult.reason instanceof ApiError && latestPredictionResult.reason.status === 404)) {
+          throw latestPredictionResult.reason;
+        }
+
         if (trendsResult.status === "rejected") throw trendsResult.reason;
         if (devicesResult.status === "rejected") throw devicesResult.reason;
 
         setData({
           profile,
           latest,
+          latestPrediction,
           trends: trendsResult.value.trends,
           devices: devicesResult.value.devices,
-          predictions: predictionsResult.status === "fulfilled" ? predictionsResult.value : [],
         });
       } catch (caught) {
         if (active) setError(caught instanceof Error ? caught.message : "Unable to load overview.");
@@ -72,12 +116,22 @@ export function OverviewClient() {
     return () => {
       active = false;
     };
-  }, [refreshKey, token]);
+  }, [appliedTrendFilters, refreshKey, token]);
 
-  const latestPrediction = data?.predictions[0] ?? null;
+  function applyTrendFilters(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setAppliedTrendFilters(trendFilters);
+  }
+
+  function resetTrendFilters() {
+    setTrendFilters(initialTrendFilters);
+    setAppliedTrendFilters(initialTrendFilters);
+  }
+
+  const latestPrediction = data?.latestPrediction ?? null;
   const primaryValue = latestPrediction?.glucose_estimate ?? data?.latest?.salivary_glucose ?? null;
   const hasPrimaryValue = toNumber(primaryValue) !== null;
-  const primaryLabel = latestPrediction?.glucose_estimate ? "Estimated glucose" : "Saliva glucose signal";
+  const primaryLabel = latestPrediction?.glucose_estimate ? "Estimated blood glucose" : "Saliva glucose signal";
   const category = latestPrediction?.clinical_category ?? (data?.latest ? "Reading received" : null);
   const freshness = relativeFreshness(latestPrediction?.sensor_recorded_at ?? data?.latest?.recorded_at);
 
@@ -86,7 +140,7 @@ export function OverviewClient() {
     if (data.devices.length === 0) return "Pair a GLICOVIA reader to begin collecting readings.";
     if (!data.latest) return "Keep the reader nearby and send the first saliva sample when ready.";
     if ((data.latest.quality_flag ?? "").toLowerCase() !== "valid") return "Repeat when convenient so the model receives a cleaner sample.";
-    return "Keep your normal routine and check the next reading for direction.";
+    return "Keep your normal routine and compare the next blood glucose estimate for movement, not just a single point.";
   }, [data]);
 
   if (loading) return <OverviewSkeleton />;
@@ -115,7 +169,7 @@ export function OverviewClient() {
       <PageHeader
         eyebrow="Subject overview"
         title={`Good data starts with context, ${data.profile.subject.display_name || data.profile.user.full_name || "there"}.`}
-        description="Current reading, category, freshness, device state, and model context are grouped so a patient can understand the signal before reading raw rows."
+        description="The headline estimate, model trust, and historical blood-glucose trend now follow the AI prediction log rather than raw salivary glucose alone."
         action={
           <GlicoButton type="button" variant="secondary" onClick={() => setRefreshKey((current) => current + 1)}>
             <ArrowClockwise size={18} weight="bold" />
@@ -171,7 +225,15 @@ export function OverviewClient() {
 
       <section className="grid gap-5 xl:grid-cols-[minmax(0,1.2fr)_420px]">
         <GlicoPanel className="reveal-up p-5 sm:p-6" style={{ animationDelay: "120ms" }}>
-          <TrendChart trends={data.trends} />
+          <TrendChart
+            trends={data.trends}
+            devices={data.devices}
+            filters={trendFilters}
+            loading={loading}
+            onFilterChange={setTrendFilters}
+            onApplyFilters={applyTrendFilters}
+            onResetFilters={resetTrendFilters}
+          />
         </GlicoPanel>
 
         <GlicoPanel className="reveal-up overflow-hidden" style={{ animationDelay: "160ms" }}>

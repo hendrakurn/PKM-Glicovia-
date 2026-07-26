@@ -10,6 +10,7 @@ import type {
   ModelVersionRow,
   PairingTokenRecord,
   PredictionResultRow,
+  PredictionTrendRow,
   ReadingTrendRow,
   SensorReadingRow,
   SubjectDeviceRow,
@@ -154,6 +155,27 @@ export const api = {
       "/api/readings/me/readings/trends",
       { token, query }
     ).then((response) => response.data),
+  myPredictions: (
+    query: { limit?: number; offset?: number; device_id?: string; sensor_reading_id?: string; model_version_id?: string } = {},
+    token: string
+  ) =>
+    request<ApiEnvelope<{ subject: Pick<SubjectRecord, "id" | "user_id" | "subject_code" | "display_name">; predictions: PredictionResultRow[] }>>(
+      "/api/predictions/me",
+      { token, query }
+    ).then((response) => response.data),
+  myLatestPrediction: (query: { device_id?: string } = {}, token: string) =>
+    request<ApiEnvelope<{ subject: Pick<SubjectRecord, "id" | "user_id" | "subject_code" | "display_name">; prediction: PredictionResultRow }>>(
+      "/api/predictions/me/latest",
+      { token, query }
+    ).then((response) => response.data),
+  myPredictionTrends: (
+    query: { device_id?: string; from?: string; to?: string; bucket?: "day" | "week"; limit?: number },
+    token: string
+  ) =>
+    request<ApiEnvelope<{ subject: Pick<SubjectRecord, "id" | "user_id" | "subject_code" | "display_name">; trends: PredictionTrendRow[] }>>(
+      "/api/predictions/me/trends",
+      { token, query }
+    ).then((response) => response.data),
   models: () => request<ApiEnvelope<{ models: ModelVersionRow[] }>>("/api/models").then((response) => response.data.models),
   createModel: (body: {
     model_name: string;
@@ -166,6 +188,8 @@ export const api = {
   }) => request<ApiEnvelope<{ model: ModelVersionRow }>>("/api/models", { method: "POST", body }).then((response) => response.data.model),
   predictions: (query: { limit?: number; offset?: number; sensor_reading_id?: string; model_version_id?: string } = {}) =>
     request<ApiEnvelope<{ predictions: PredictionResultRow[] }>>("/api/predictions", { query }).then((response) => response.data.predictions),
+  latestPrediction: () =>
+    request<ApiEnvelope<{ prediction: PredictionResultRow }>>("/api/predictions/latest").then((response) => response.data.prediction),
 };
 
 export type GlicoviaApi = typeof api;

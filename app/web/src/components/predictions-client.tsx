@@ -169,7 +169,7 @@ export function PredictionsClient() {
           ) : error ? (
             <StateBlock tone="coral" title="Prediction context could not load" description={error} icon={<WarningCircle size={22} weight="bold" />} />
           ) : predictions.length === 0 ? (
-            <StateBlock tone="slate" title="No predictions returned" description="The backend currently stores prediction metadata only when another process writes results." icon={<Brain size={22} weight="bold" />} />
+            <StateBlock tone="slate" title="No predictions returned" description="New MQTT readings with complete sensor data will automatically create prediction results through the backend inference service." icon={<Brain size={22} weight="bold" />} />
           ) : (
             <GlicoPanel className="overflow-hidden">
               <div className="border-b-2 border-[color:var(--line)] bg-[color:var(--rose)] p-5">

@@ -130,6 +130,14 @@ export type ReadingTrendRow = {
   salivary_glucose_avg: string | null;
 };
 
+export type PredictionTrendRow = {
+  bucket_start: ISODateString;
+  prediction_count: string;
+  glucose_estimate_avg: string | null;
+  glucose_estimate_min: string | null;
+  glucose_estimate_max: string | null;
+};
+
 export type ModelVersionRow = {
   id: string;
   model_name: string;
