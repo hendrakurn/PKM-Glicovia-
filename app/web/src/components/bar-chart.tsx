@@ -26,12 +26,12 @@ export function BarChartCard({
                 <span className="font-medium text-[color:var(--text-primary)]">{item.label}</span>
                 <span className="font-mono text-[color:var(--text-muted)]">{item.value}</span>
               </div>
-              <div className="h-2 rounded-full bg-slate-100">
+              <div className="h-2 rounded-full bg-[color:var(--surface-soft)]">
                 <div
                   className="h-2 rounded-full"
                   style={{
                     width,
-                    backgroundColor: item.color ?? "#14B8A6",
+                    backgroundColor: item.color ?? "#076653",
                   }}
                 />
               </div>

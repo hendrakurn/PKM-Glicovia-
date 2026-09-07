@@ -136,7 +136,7 @@ export function AuthEntry() {
                 <div className="ink-panel p-5">
                   <p className="label-text text-[color:var(--butter)]">Primary view</p>
                   <p className="mt-3 text-3xl font-black leading-tight">Today, then detail.</p>
-                  <p className="mt-3 text-sm leading-6 text-[#e6dfd2]">The dashboard leads with meaning before raw rows.</p>
+                  <p className="mt-3 text-sm leading-6 text-[color:var(--mint)]">The dashboard leads with meaning before raw rows.</p>
                 </div>
                 <div className="soft-row bg-[color:var(--canvas)] p-5">
                   <p className="label-text">Reviewer layer</p>

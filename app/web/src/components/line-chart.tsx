@@ -77,13 +77,13 @@ export function LineChartCard({
         </div>
       </div>
 
-      <div className="overflow-hidden rounded-[12px] border border-[color:var(--border)] bg-[linear-gradient(180deg,rgba(249,251,253,0.92),rgba(255,255,255,0.92))] p-3">
+      <div className="overflow-hidden rounded-[12px] border border-[color:var(--border)] bg-[linear-gradient(180deg,rgba(226,251,206,0.92),rgba(255,253,238,0.92))] p-3">
         <svg viewBox={`0 0 ${width} ${height}`} className="h-[280px] w-full">
           {Array.from({ length: gridLines + 1 }).map((_, index) => {
             const y = padding.top + ((height - padding.top - padding.bottom) / gridLines) * index;
             return (
               <g key={index}>
-                <line x1={padding.left} x2={width - padding.right} y1={y} y2={y} stroke="#E5EDF5" strokeWidth="1" />
+                <line x1={padding.left} x2={width - padding.right} y1={y} y2={y} stroke="#E2FBCE" strokeWidth="1" />
                 <text x={12} y={y + 4} style={{ fill: "var(--text-muted)" }} className="text-[10px] font-medium">
                   {Math.round(max - ((max - min) / gridLines) * index)}
                 </text>
@@ -119,7 +119,7 @@ export function LineChartCard({
                   const step = item.values.length > 1 ? (width - padding.left - padding.right) / (item.values.length - 1) : width;
                   const x = padding.left + step * pointIndex;
                   const y = padding.top + (1 - (value - min) / Math.max(max - min, 1)) * (height - padding.top - padding.bottom);
-                  return <circle key={`${item.label}-${pointIndex}`} cx={x} cy={y} r={index === 0 ? 4 : 3.5} fill={item.color} stroke="#FFFFFF" strokeWidth="2" />;
+                  return <circle key={`${item.label}-${pointIndex}`} cx={x} cy={y} r={index === 0 ? 4 : 3.5} fill={item.color} stroke="#FFFDEE" strokeWidth="2" />;
                 })}
               </g>
             );

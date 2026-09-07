@@ -198,7 +198,7 @@ export function OperatorClient() {
                 <button
                   key={device.id}
                   type="button"
-                  className="grid w-full gap-3 bg-[color:var(--canvas)] p-5 text-left transition hover:bg-white md:grid-cols-[minmax(0,1fr)_140px] md:items-center"
+                  className="grid w-full gap-3 bg-[color:var(--canvas)] p-5 text-left transition hover:bg-[color:var(--surface-elevated)] md:grid-cols-[minmax(0,1fr)_140px] md:items-center"
                   onClick={() => void openDevice(device.id)}
                 >
                   <span className="min-w-0">

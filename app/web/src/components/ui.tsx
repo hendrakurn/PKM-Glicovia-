@@ -8,7 +8,7 @@ export function buttonClasses(variant: "primary" | "secondary" | "ghost" = "seco
   if (variant === "primary") {
     return cn(
       buttonBase,
-      "border border-emerald-600 bg-emerald-600 text-white shadow-[0_8px_24px_rgba(16,185,129,0.14)] hover:bg-emerald-700"
+      "border border-[color:var(--green)] bg-[color:var(--green)] text-[color:var(--canvas)] shadow-[0_8px_24px_rgba(7,102,83,0.14)] hover:bg-[color:var(--ink)]"
     );
   }
 
@@ -67,12 +67,12 @@ export function Badge({
   tone?: "slate" | "emerald" | "amber" | "red" | "blue" | "indigo";
 }) {
   const toneClasses = {
-    slate: "border-slate-200 bg-slate-50 text-slate-700",
-    emerald: "border-emerald-200 bg-emerald-50 text-emerald-700",
-    amber: "border-amber-200 bg-amber-50 text-amber-700",
-    red: "border-red-200 bg-red-50 text-red-700",
-    blue: "border-blue-200 bg-blue-50 text-blue-700",
-    indigo: "border-indigo-200 bg-indigo-50 text-indigo-700",
+    slate: "border-[color:var(--green)] bg-[color:var(--surface-soft)] text-[color:var(--ink)]",
+    emerald: "border-[color:var(--green)] bg-[color:var(--mint)] text-[color:var(--green)]",
+    amber: "border-[color:var(--amber)] bg-[color:var(--butter)] text-[color:var(--ink)]",
+    red: "border-[color:var(--ink)] bg-[color:var(--butter)] text-[color:var(--ink)]",
+    blue: "border-[color:var(--blue)] bg-[color:var(--mint)] text-[color:var(--blue)]",
+    indigo: "border-[color:var(--green)] bg-[color:var(--surface-soft)] text-[color:var(--green)]",
   } as const;
 
   return (
@@ -95,11 +95,11 @@ export function StatusDot({
   label: string;
 }) {
   const dot = {
-    emerald: "bg-emerald-500",
-    amber: "bg-amber-500",
-    red: "bg-red-500",
-    slate: "bg-slate-400",
-    blue: "bg-blue-500",
+    emerald: "bg-[color:var(--green)]",
+    amber: "bg-[color:var(--amber)]",
+    red: "bg-[color:var(--red)]",
+    slate: "bg-[color:var(--ink-soft)]",
+    blue: "bg-[color:var(--blue)]",
   } as const;
 
   return (
@@ -126,11 +126,11 @@ export function StatCard({
   tone?: "emerald" | "teal" | "blue" | "amber" | "slate";
 }) {
   const toneClasses = {
-    emerald: "text-emerald-600 bg-emerald-50 border-emerald-100",
-    teal: "text-teal-600 bg-teal-50 border-teal-100",
-    blue: "text-blue-600 bg-blue-50 border-blue-100",
-    amber: "text-amber-600 bg-amber-50 border-amber-100",
-    slate: "text-slate-600 bg-slate-50 border-slate-100",
+    emerald: "text-[color:var(--green)] bg-[color:var(--mint)] border-[color:var(--green)]",
+    teal: "text-[color:var(--teal)] bg-[color:var(--mint)] border-[color:var(--teal)]",
+    blue: "text-[color:var(--blue)] bg-[color:var(--mint)] border-[color:var(--blue)]",
+    amber: "text-[color:var(--ink)] bg-[color:var(--butter)] border-[color:var(--amber)]",
+    slate: "text-[color:var(--ink-muted)] bg-[color:var(--surface-soft)] border-[color:var(--green)]",
   } as const;
 
   return (
@@ -170,7 +170,7 @@ export function EmptyState({
   return (
     <div className="flex flex-col items-start gap-4 rounded-[14px] border border-dashed border-[color:var(--border)] bg-[color:var(--surface-elevated)] p-6 text-left">
       <div className="flex h-12 w-12 items-center justify-center rounded-[14px] border border-[color:var(--border)] bg-[color:var(--surface)] text-[color:var(--text-secondary)]">
-        {icon ?? <span className="h-3.5 w-3.5 rounded-full bg-emerald-500" />}
+        {icon ?? <span className="h-3.5 w-3.5 rounded-full bg-[color:var(--green)]" />}
       </div>
       <div className="space-y-1">
         <h3 className="text-base font-semibold text-[color:var(--text-primary)]">{title}</h3>
@@ -182,7 +182,7 @@ export function EmptyState({
 }
 
 export function SkeletonBlock({ className }: { className?: string }) {
-  return <div className={cn("animate-pulse rounded-[12px] bg-slate-100", className)} />;
+  return <div className={cn("animate-pulse rounded-[12px] bg-[color:var(--surface-soft)]", className)} />;
 }
 
 export function LoadingCard() {
@@ -211,14 +211,14 @@ export function ToastPill({
   tone?: "emerald" | "amber" | "red" | "blue";
 }) {
   const accent = {
-    emerald: "border-emerald-200 bg-emerald-50 text-emerald-800",
-    amber: "border-amber-200 bg-amber-50 text-amber-800",
-    red: "border-red-200 bg-red-50 text-red-800",
-    blue: "border-blue-200 bg-blue-50 text-blue-800",
+    emerald: "border-[color:var(--green)] bg-[color:var(--mint)] text-[color:var(--green)]",
+    amber: "border-[color:var(--amber)] bg-[color:var(--butter)] text-[color:var(--ink)]",
+    red: "border-[color:var(--ink)] bg-[color:var(--butter)] text-[color:var(--ink)]",
+    blue: "border-[color:var(--blue)] bg-[color:var(--mint)] text-[color:var(--blue)]",
   } as const;
 
   return (
-    <div className={cn("rounded-[14px] border px-4 py-3 shadow-[0_12px_30px_rgba(16,32,51,0.08)]", accent[tone])}>
+    <div className={cn("rounded-[14px] border px-4 py-3 shadow-[0_12px_30px_rgba(6,35,29,0.08)]", accent[tone])}>
       <div className="flex items-start gap-3">
         <span className="mt-1 h-3 w-3 rounded-full bg-current opacity-80" />
         <div>
@@ -240,12 +240,12 @@ export function GlyphMark({
   className?: string;
 }) {
   const tones = {
-    emerald: "border-emerald-200 bg-emerald-50 text-emerald-700",
-    teal: "border-teal-200 bg-teal-50 text-teal-700",
-    blue: "border-blue-200 bg-blue-50 text-blue-700",
-    amber: "border-amber-200 bg-amber-50 text-amber-700",
-    slate: "border-slate-200 bg-slate-50 text-slate-700",
-    red: "border-red-200 bg-red-50 text-red-700",
+    emerald: "border-[color:var(--green)] bg-[color:var(--mint)] text-[color:var(--green)]",
+    teal: "border-[color:var(--teal)] bg-[color:var(--mint)] text-[color:var(--teal)]",
+    blue: "border-[color:var(--blue)] bg-[color:var(--mint)] text-[color:var(--blue)]",
+    amber: "border-[color:var(--amber)] bg-[color:var(--butter)] text-[color:var(--ink)]",
+    slate: "border-[color:var(--green)] bg-[color:var(--surface-soft)] text-[color:var(--ink-muted)]",
+    red: "border-[color:var(--ink)] bg-[color:var(--butter)] text-[color:var(--ink)]",
   } as const;
 
   return (
@@ -257,10 +257,10 @@ export function GlyphMark({
 
 export function MetricChip({ label, value, tone = "emerald" }: { label: string; value: string; tone?: "emerald" | "amber" | "red" | "blue" }) {
   const tones = {
-    emerald: "border-emerald-200 bg-emerald-50 text-emerald-700",
-    amber: "border-amber-200 bg-amber-50 text-amber-700",
-    red: "border-red-200 bg-red-50 text-red-700",
-    blue: "border-blue-200 bg-blue-50 text-blue-700",
+    emerald: "border-[color:var(--green)] bg-[color:var(--mint)] text-[color:var(--green)]",
+    amber: "border-[color:var(--amber)] bg-[color:var(--butter)] text-[color:var(--ink)]",
+    red: "border-[color:var(--ink)] bg-[color:var(--butter)] text-[color:var(--ink)]",
+    blue: "border-[color:var(--blue)] bg-[color:var(--mint)] text-[color:var(--blue)]",
   } as const;
 
   return (

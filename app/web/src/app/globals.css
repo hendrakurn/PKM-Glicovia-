@@ -1,32 +1,32 @@
 @import "tailwindcss";
 
 :root {
-  --background: #fbf8ef;
-  --background-soft: #f3efe3;
-  --canvas: #fffdf6;
-  --surface: #fffaf0;
-  --surface-elevated: #fffdf6;
-  --surface-soft: #f3efe3;
-  --line: #17130f;
-  --border: #17130f;
-  --ink: #17130f;
-  --ink-muted: #625d54;
-  --ink-soft: #8a8175;
-  --text-primary: #17130f;
-  --text-secondary: #625d54;
-  --text-muted: #8a8175;
-  --text-disabled: #a79d90;
-  --mint: #cce8d7;
-  --sky: #cddff4;
-  --butter: #f3df91;
-  --coral: #f0b39d;
-  --rose: #f2d2dc;
-  --green: #0f6f4f;
-  --emerald: #0f6f4f;
-  --teal: #0f766e;
-  --blue: #275d85;
-  --amber: #8b6508;
-  --red: #a8342d;
+  --background: #fffdee;
+  --background-soft: #e2fbce;
+  --canvas: #fffdee;
+  --surface: #fffdee;
+  --surface-elevated: #e2fbce;
+  --surface-soft: #e2fbce;
+  --line: #06231d;
+  --border: #0c342c;
+  --ink: #06231d;
+  --ink-muted: #0c342c;
+  --ink-soft: #076653;
+  --text-primary: #06231d;
+  --text-secondary: #0c342c;
+  --text-muted: #076653;
+  --text-disabled: #076653;
+  --mint: #e2fbce;
+  --sky: #e2fbce;
+  --butter: #e3ef26;
+  --coral: #e3ef26;
+  --rose: #e2fbce;
+  --green: #076653;
+  --emerald: #076653;
+  --teal: #076653;
+  --blue: #0c342c;
+  --amber: #e3ef26;
+  --red: #0c342c;
 }
 
 @theme inline {
@@ -75,8 +75,8 @@
     border: 1px solid var(--border);
     background: var(--surface);
     box-shadow:
-      0 1px 2px rgba(23, 19, 15, 0.04),
-      0 10px 28px rgba(23, 19, 15, 0.035);
+      0 1px 2px rgba(6, 35, 29, 0.04),
+      0 10px 28px rgba(6, 35, 29, 0.035);
   }
 
   .input-field {
@@ -96,8 +96,8 @@
   }
 
   .input-field:focus {
-    border-color: rgba(15, 111, 79, 0.5);
-    box-shadow: 0 0 0 3px rgba(204, 232, 215, 0.7);
+    border-color: rgba(7, 102, 83, 0.65);
+    box-shadow: 0 0 0 3px rgba(227, 239, 38, 0.35);
     background: var(--surface-elevated);
   }
 
@@ -125,8 +125,8 @@
   }
 
   .glico-input:focus {
-    background: #ffffff;
-    box-shadow: 0 0 0 4px rgba(204, 232, 215, 0.9);
+    background: #fffdee;
+    box-shadow: 0 0 0 4px rgba(227, 239, 38, 0.42);
   }
 
   .label-text {
@@ -140,7 +140,7 @@
   .soft-row {
     border-radius: 8px;
     border: 2px solid var(--line);
-    background: rgba(255, 253, 246, 0.72);
+    background: rgba(255, 253, 238, 0.72);
   }
 
   .ink-panel {

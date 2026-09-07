@@ -133,7 +133,7 @@ export function IngestionForm() {
             <input type="number" step="1" value={form.protoGlucoseRaw} onChange={(event) => updateField("protoGlucoseRaw", event.target.value)} className="input-field" />
           </Field>
           <div className="md:col-span-2 flex flex-wrap items-center gap-3 pt-2">
-            <button type="submit" className="inline-flex items-center gap-2 rounded-[10px] border border-emerald-600 bg-emerald-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-emerald-700">
+            <button type="submit" className="inline-flex items-center gap-2 rounded-[10px] border border-[color:var(--green)] bg-[color:var(--green)] px-4 py-2.5 text-sm font-medium text-[color:var(--canvas)] hover:bg-[color:var(--ink)]">
               <span className="text-sm leading-none">⇪</span>
               Submit reading
             </button>
@@ -149,7 +149,7 @@ export function IngestionForm() {
       <div className="space-y-6">
         <Panel className="p-5">
           <div className="flex items-start gap-3">
-            <span className="mt-0.5 text-emerald-600">✓</span>
+            <span className="mt-0.5 text-[color:var(--green)]">✓</span>
             <div>
               <h3 className="text-base font-semibold text-[color:var(--text-primary)]">Validation guide</h3>
               <p className="mt-1 text-sm text-[color:var(--text-secondary)]">Anonymous IDs, believable ranges, and a stable device status keep the pipeline clean.</p>
@@ -164,7 +164,7 @@ export function IngestionForm() {
 
         <Panel className="p-5">
           <div className="flex items-start gap-3">
-            <span className="mt-0.5 text-amber-600">!</span>
+            <span className="mt-0.5 text-[color:var(--amber)]">!</span>
             <div>
               <h3 className="text-base font-semibold text-[color:var(--text-primary)]">Submission result</h3>
               <p className="mt-1 text-sm text-[color:var(--text-secondary)]">A toast appears after a valid submit so the team can confirm the entry went through.</p>
@@ -196,7 +196,7 @@ function Field({ label, error, children }: { label: string; error?: string; chil
     <label className="space-y-2">
       <span className="block text-sm font-medium text-[color:var(--text-primary)]">{label}</span>
       {children}
-      {error ? <span className="block text-sm text-red-600">{error}</span> : null}
+      {error ? <span className="block text-sm text-[color:var(--red)]">{error}</span> : null}
     </label>
   );
 }

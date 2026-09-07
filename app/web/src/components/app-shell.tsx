@@ -75,7 +75,7 @@ export function AppShell({ children }: { children: ReactNode }) {
                     "group flex items-center gap-3 rounded-[8px] border-2 border-transparent px-3 py-3 text-sm font-black text-[color:var(--ink-muted)] transition",
                     active
                       ? "border-[color:var(--line)] bg-[color:var(--canvas)] text-[color:var(--ink)] shadow-[3px_3px_0_var(--line)]"
-                      : "hover:border-[color:var(--line)] hover:bg-white hover:text-[color:var(--ink)]"
+                      : "hover:border-[color:var(--line)] hover:bg-[color:var(--surface-elevated)] hover:text-[color:var(--ink)]"
                   )}
                 >
                   <span className={cn("flex h-10 w-10 shrink-0 items-center justify-center rounded-[8px] border-2 border-[color:var(--line)]", item.tone)}>

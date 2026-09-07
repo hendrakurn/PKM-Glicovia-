@@ -57,7 +57,7 @@ export function RecentReadingsTable({ rows, title = "Recent readings", subtitle 
           <p className="mt-1 text-sm text-[color:var(--text-secondary)]">{subtitle}</p>
         </div>
         <div className="flex items-center gap-2 text-sm text-[color:var(--text-secondary)]">
-          <span className="text-emerald-600">✓</span>
+          <span className="text-[color:var(--green)]">✓</span>
           {sorted.length} records visible
         </div>
       </div>
@@ -88,7 +88,7 @@ export function RecentReadingsTable({ rows, title = "Recent readings", subtitle 
                   key={row.id}
                   className={cn(
                     "border-t border-[color:var(--border)] transition-colors hover:bg-[color:var(--surface-elevated)]",
-                    selected?.id === row.id && "bg-emerald-50/50"
+                    selected?.id === row.id && "bg-[color:var(--mint)]/50"
                   )}
                 >
                   <td className="px-5 py-4">
@@ -149,11 +149,11 @@ export function RecentReadingsTable({ rows, title = "Recent readings", subtitle 
             <DetailField label="Raw packet" value={`${selected.protoGlucoseRaw}`} />
           </div>
           {selected.anomaly ? (
-            <div className="mt-4 flex items-start gap-3 rounded-[12px] border border-amber-200 bg-amber-50 p-4 text-amber-800">
+            <div className="mt-4 flex items-start gap-3 rounded-[12px] border border-[color:var(--amber)] bg-[color:var(--butter)] p-4 text-[color:var(--ink)]">
               <span className="mt-0.5 text-base leading-none">!</span>
               <div>
                 <p className="font-medium">Anomaly note</p>
-                <p className="text-sm text-amber-700">{selected.anomaly}</p>
+                <p className="text-sm text-[color:var(--ink-muted)]">{selected.anomaly}</p>
               </div>
             </div>
           ) : null}

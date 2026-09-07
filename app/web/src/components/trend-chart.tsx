@@ -215,7 +215,7 @@ export function TrendChart({ trends, devices, filters, loading = false, onFilter
             const y = padding.top + (1 - (tick - axisMin) / axisSpan) * (height - padding.top - padding.bottom);
             return (
               <g key={tick}>
-                <line x1={padding.left} x2={width - padding.right} y1={y} y2={y} stroke="rgba(23,19,15,0.18)" strokeWidth="2" />
+                <line x1={padding.left} x2={width - padding.right} y1={y} y2={y} stroke="rgba(6,35,29,0.18)" strokeWidth="2" />
                 <text x={padding.left - 10} y={y + 4} textAnchor="end" className="fill-[color:var(--ink-muted)] text-[11px] font-bold">
                   {Math.round(tick)}
                 </text>

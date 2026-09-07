@@ -8,7 +8,7 @@ export function TopBar() {
       <div className="mx-auto flex w-full max-w-[1540px] flex-col gap-3 px-4 py-3 lg:px-6">
         <div className="flex items-center justify-between gap-3">
           <div className="flex min-w-0 flex-1 items-center gap-3">
-            <div className="flex h-10 w-full max-w-[520px] items-center gap-3 rounded-[12px] border border-[color:var(--border)] bg-[color:var(--surface)] px-3 text-[color:var(--text-muted)] shadow-[0_1px_2px_rgba(16,32,51,0.04)]">
+            <div className="flex h-10 w-full max-w-[520px] items-center gap-3 rounded-[12px] border border-[color:var(--border)] bg-[color:var(--surface)] px-3 text-[color:var(--text-muted)] shadow-[0_1px_2px_rgba(6,35,29,0.04)]">
               <span className="text-base leading-none">⌕</span>
               <span className="truncate text-sm">Search subject, reading, or model version</span>
             </div>

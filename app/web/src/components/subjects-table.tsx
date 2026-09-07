@@ -72,7 +72,7 @@ export function SubjectsTable({ subjects }: { subjects: Subject[] }) {
             className={cn(
               "rounded-full border px-3 py-1.5 text-sm font-medium transition-colors",
               filter === item
-                ? "border-emerald-200 bg-emerald-50 text-emerald-700"
+                ? "border-[color:var(--green)] bg-[color:var(--mint)] text-[color:var(--green)]"
                 : "border-[color:var(--border)] bg-[color:var(--surface)] text-[color:var(--text-secondary)] hover:bg-[color:var(--surface-elevated)]"
             )}
           >
@@ -120,7 +120,7 @@ export function SubjectsTable({ subjects }: { subjects: Subject[] }) {
                   </td>
                   <td className="px-5 py-4">
                     <div className="space-y-1">
-                      <Link href={`/subjects/${subject.id.toLowerCase()}`} className="font-semibold text-[color:var(--text-primary)] hover:text-emerald-700">
+                      <Link href={`/subjects/${subject.id.toLowerCase()}`} className="font-semibold text-[color:var(--text-primary)] hover:text-[color:var(--green)]">
                         {subject.code}
                       </Link>
                       <p className="text-sm text-[color:var(--text-secondary)]">{subject.alias}</p>

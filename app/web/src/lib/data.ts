@@ -62,12 +62,12 @@ export const dashboardTrend = {
   series: [
     {
       label: "Predicted BG",
-      color: "#14B8A6",
+      color: "#076653",
       values: [108, 112, 118, 131, 139, 142, 137, 129],
     },
     {
       label: "Reference BG",
-      color: "#3B82F6",
+      color: "#0C342C",
       values: [104, 108, 115, 126, 134, 138, 136, 124],
     },
   ],
@@ -417,9 +417,9 @@ export const analyticsMetrics = [
 ];
 
 export const distributionBuckets = [
-  { label: "Normal", count: 11, color: "#10B981" },
-  { label: "Pre-Diabetes", count: 8, color: "#3B82F6" },
-  { label: "Diabetes", count: 5, color: "#EF4444" },
+  { label: "Normal", count: 11, color: "#076653" },
+  { label: "Pre-Diabetes", count: 8, color: "#E3EF26" },
+  { label: "Diabetes", count: 5, color: "#0C342C" },
 ];
 
 export const featureCorrelation = [

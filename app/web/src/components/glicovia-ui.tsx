@@ -10,11 +10,11 @@ const buttonBase =
 
 export function glicoButtonClasses(variant: ButtonVariant = "secondary", size: ButtonSize = "md") {
   const variants: Record<ButtonVariant, string> = {
-    primary: "bg-[color:var(--mint)] text-[color:var(--ink)] shadow-[3px_3px_0_var(--line)] hover:bg-[#bfe0cc]",
-    secondary: "bg-[color:var(--canvas)] text-[color:var(--ink)] shadow-[3px_3px_0_var(--line)] hover:bg-white",
+    primary: "bg-[color:var(--mint)] text-[color:var(--ink)] shadow-[3px_3px_0_var(--line)] hover:bg-[color:var(--butter)]",
+    secondary: "bg-[color:var(--canvas)] text-[color:var(--ink)] shadow-[3px_3px_0_var(--line)] hover:bg-[color:var(--surface-elevated)]",
     ghost: "border-transparent bg-transparent text-[color:var(--ink-muted)] hover:bg-[color:var(--surface-soft)]",
-    danger: "bg-[color:var(--coral)] text-[color:var(--ink)] shadow-[3px_3px_0_var(--line)] hover:bg-[#eaa690]",
-    ink: "bg-[color:var(--ink)] text-[color:var(--canvas)] shadow-[3px_3px_0_var(--line)] hover:bg-[#2a241d]",
+    danger: "bg-[color:var(--coral)] text-[color:var(--ink)] shadow-[3px_3px_0_var(--line)] hover:bg-[color:var(--mint)]",
+    ink: "bg-[color:var(--ink)] text-[color:var(--canvas)] shadow-[3px_3px_0_var(--line)] hover:bg-[color:var(--blue)]",
   };
   const sizes: Record<ButtonSize, string> = {
     sm: "min-h-9 px-3 py-2 text-xs",
