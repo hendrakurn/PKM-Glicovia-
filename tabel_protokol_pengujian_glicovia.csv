@@ -1,0 +1,11 @@
+Jenis/Komponen yang Diuji,Parameter Uji,Metode Uji,Kriteria Lulus
+Sistem catu daya,"Tegangan keluaran baterai, TP4056, dan MT3608",Pengukuran tegangan menggunakan multimeter pada setiap jalur daya,Tegangan stabil sesuai kebutuhan komponen dan tidak terjadi penurunan tegangan berlebih saat alat dinyalakan
+ESP32-WROOM-32U,Fungsi kendali dan komunikasi,"Pengujian upload program, pembacaan data serial, serta koneksi Wi-Fi/BLE",ESP32 dapat menjalankan program membaca data dan melakukan koneksi nirkabel
+Modul ADS1115,Pembacaan sinyal analog,Pemberian tegangan uji bertahap dan pembacaan nilai ADC melalui ESP32,Nilai ADC berubah sesuai perubahan tegangan masukan dan terbaca stabil
+Rangkaian penguat OPA2333,Penguatan sinyal sensor,Pengujian sinyal masukan kecil menggunakan rangkaian simulasi atau sumber tegangan rendah,Keluaran sinyal meningkat dan dapat dibaca oleh ADS1115 tanpa saturasi
+Layar OLED/LCD I2C,Tampilan informasi alat,"Pengujian tampilan status alat, nilai sensor, dan hasil klasifikasi",Informasi dapat ditampilkan dengan jelas dan sesuai data yang dikirim ESP32
+Tombol dan buzzer,Fungsi input dan indikator,Pengujian tombol untuk memulai proses pembacaan serta buzzer sebagai indikator status,Tombol merespons perintah dan buzzer aktif pada kondisi yang ditentukan
+Cartridge SPCE,Respons sensor terhadap biomarka saliva,"Pengujian menggunakan larutan standar glukosa, pH, dan fruktosamin setelah SPCE tersedia",Sinyal sensor berubah mengikuti variasi konsentrasi atau parameter uji
+Sistem klasifikasi SVM,Akurasi klasifikasi risiko,Pengujian menggunakan data dummy atau dataset uji biomarka saliva,"Sistem mampu mengklasifikasikan data ke kelas normal, prediabetes, dan diabetes sesuai target evaluasi"
+Transmisi data IoT,Pengiriman data ke dashboard,Pengiriman data hasil pembacaan dari ESP32 ke sistem web melalui Wi-Fi/BLE,"Data berhasil diterima, disimpan, dan ditampilkan pada dashboard"
+Dashboard web,Visualisasi dan penyimpanan hasil,"Pengujian tampilan grafik, tabel riwayat, kategori risiko, dan data pengguna",Dashboard menampilkan data pemeriksaan secara lengkap dan sesuai format
