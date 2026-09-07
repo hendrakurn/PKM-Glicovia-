@@ -1,0 +1,223 @@
+{
+  "timestamp": "2026-08-18T00:49:23Z",
+  "raw_csv_path": "src/data/dummy/generated_data.csv",
+  "processed_data_path": "src/models/model_comparison/processed",
+  "preprocessing": {
+    "X_train_path": "src/models/model_comparison/processed/X_train.npy",
+    "X_test_path": "src/models/model_comparison/processed/X_test.npy",
+    "y_train_path": "src/models/model_comparison/processed/y_train.npy",
+    "y_test_path": "src/models/model_comparison/processed/y_test.npy",
+    "scaler_params_path": "src/models/model_comparison/processed/scaler_params.json",
+    "preprocessing_report_path": "src/models/model_comparison/processed/preprocessing_report.json",
+    "train_samples": 98,
+    "test_samples": 25,
+    "feature_names": [
+      "glucose_saliva",
+      "ph_value",
+      "fructosamine_umol_l"
+    ],
+    "target_label": "bg_mgdl_reference",
+    "stratify_label": "bg_class",
+    "scaler_type": "StandardScaler"
+  },
+  "ranking": {
+    "primary": "highest test_r2",
+    "tie_breaker": "lowest test_rmse"
+  },
+  "best_model": {
+    "model_name": "Ridge",
+    "cv_r2_mean": 0.9262861349916095,
+    "cv_r2_std": 0.020807725894838366,
+    "cv_rmse_mean": 13.573233783817178,
+    "cv_rmse_std": 2.430941704717644,
+    "cv_mae_mean": 10.407167298327668,
+    "cv_mae_std": 1.7188152407209996,
+    "train_r2": 0.9448774988301984,
+    "test_r2": 0.9777274431299485,
+    "r2_gap": -0.03284994429975008,
+    "test_rmse": 8.140650908389356,
+    "test_mae": 6.682123676951956,
+    "test_clinical_accuracy": 0.92,
+    "test_clinical_f1_macro": 0.8585231193926847,
+    "model_details": {
+      "estimator_type": "Ridge"
+    },
+    "runtime_seconds": 0.074
+  },
+  "models_compared": 8,
+  "model_results": [
+    {
+      "model_name": "Ridge",
+      "cv_r2_mean": 0.9262861349916095,
+      "cv_r2_std": 0.020807725894838366,
+      "cv_rmse_mean": 13.573233783817178,
+      "cv_rmse_std": 2.430941704717644,
+      "cv_mae_mean": 10.407167298327668,
+      "cv_mae_std": 1.7188152407209996,
+      "train_r2": 0.9448774988301984,
+      "test_r2": 0.9777274431299485,
+      "r2_gap": -0.03284994429975008,
+      "test_rmse": 8.140650908389356,
+      "test_mae": 6.682123676951956,
+      "test_clinical_accuracy": 0.92,
+      "test_clinical_f1_macro": 0.8585231193926847,
+      "model_details": {
+        "estimator_type": "Ridge"
+      },
+      "runtime_seconds": 0.074
+    },
+    {
+      "model_name": "LinearRegression",
+      "cv_r2_mean": 0.9261249433098815,
+      "cv_r2_std": 0.02150259736692051,
+      "cv_rmse_mean": 13.574464080319425,
+      "cv_rmse_std": 2.4785186291956003,
+      "cv_mae_mean": 10.424436666484203,
+      "cv_mae_std": 1.7233860239025516,
+      "train_r2": 0.9449197694806313,
+      "test_r2": 0.9777131750178304,
+      "r2_gap": -0.032793405537199116,
+      "test_rmse": 8.143257998459978,
+      "test_mae": 6.746869825841355,
+      "test_clinical_accuracy": 0.92,
+      "test_clinical_f1_macro": 0.8585231193926847,
+      "model_details": {
+        "estimator_type": "LinearRegression"
+      },
+      "runtime_seconds": 1.202
+    },
+    {
+      "model_name": "TunedSVR_RBF",
+      "cv_r2_mean": 0.9568057870856338,
+      "cv_r2_std": 0.017858632482153674,
+      "cv_rmse_mean": 9.868843997891338,
+      "cv_rmse_std": 1.7028609134632762,
+      "cv_mae_mean": 7.296240974817872,
+      "cv_mae_std": 1.247473739033347,
+      "train_r2": 0.9730422585635835,
+      "test_r2": 0.9688895122058014,
+      "r2_gap": 0.004152746357782067,
+      "test_rmse": 9.621161473912709,
+      "test_mae": 7.3927454505162045,
+      "test_clinical_accuracy": 0.84,
+      "test_clinical_f1_macro": 0.7662090007627764,
+      "model_details": {
+        "estimator_type": "GridSearchCV",
+        "best_estimator_type": "SVR",
+        "best_params": {
+          "C": 1000.0,
+          "epsilon": 0.01,
+          "gamma": 0.03
+        },
+        "best_cv_score": 0.9634501319807396
+      },
+      "runtime_seconds": 1.617
+    },
+    {
+      "model_name": "GradientBoostingRegressor",
+      "cv_r2_mean": 0.8957951037386355,
+      "cv_r2_std": 0.0849520827584466,
+      "cv_rmse_mean": 14.701892378967377,
+      "cv_rmse_std": 4.74605259916993,
+      "cv_mae_mean": 8.875762376850027,
+      "cv_mae_std": 2.6423903536382727,
+      "train_r2": 0.9985731814241039,
+      "test_r2": 0.9686656819349763,
+      "r2_gap": 0.02990749948912763,
+      "test_rmse": 9.655710073905936,
+      "test_mae": 7.088897631268396,
+      "test_clinical_accuracy": 0.8,
+      "test_clinical_f1_macro": 0.6814954051796157,
+      "model_details": {
+        "estimator_type": "GradientBoostingRegressor"
+      },
+      "runtime_seconds": 0.31
+    },
+    {
+      "model_name": "RandomForestRegressor",
+      "cv_r2_mean": 0.89804491913834,
+      "cv_r2_std": 0.08670700519442744,
+      "cv_rmse_mean": 14.601630415822687,
+      "cv_rmse_std": 3.9842122284790884,
+      "cv_mae_mean": 8.846164283178538,
+      "cv_mae_std": 2.056651173408119,
+      "train_r2": 0.9891166041072346,
+      "test_r2": 0.9442346384260825,
+      "r2_gap": 0.0448819656811521,
+      "test_rmse": 12.881200922530589,
+      "test_mae": 9.349918955647388,
+      "test_clinical_accuracy": 0.72,
+      "test_clinical_f1_macro": 0.5511695906432749,
+      "model_details": {
+        "estimator_type": "RandomForestRegressor"
+      },
+      "runtime_seconds": 0.8
+    },
+    {
+      "model_name": "KNeighborsRegressor",
+      "cv_r2_mean": 0.9167273465968421,
+      "cv_r2_std": 0.055949346494686136,
+      "cv_rmse_mean": 13.571672968120449,
+      "cv_rmse_std": 2.3260791363504394,
+      "cv_mae_mean": 9.09568021618843,
+      "cv_mae_std": 0.9378397778246851,
+      "train_r2": 0.9656136903342004,
+      "test_r2": 0.9440377164113394,
+      "r2_gap": 0.021575973922861036,
+      "test_rmse": 12.903924317213379,
+      "test_mae": 8.910198414938813,
+      "test_clinical_accuracy": 0.84,
+      "test_clinical_f1_macro": 0.7166666666666667,
+      "model_details": {
+        "estimator_type": "KNeighborsRegressor"
+      },
+      "runtime_seconds": 0.06
+    },
+    {
+      "model_name": "SVR_RBF",
+      "cv_r2_mean": 0.7848013134929344,
+      "cv_r2_std": 0.0985933664483537,
+      "cv_rmse_mean": 24.421259605548446,
+      "cv_rmse_std": 11.290578717204149,
+      "cv_mae_mean": 13.870709010976245,
+      "cv_mae_std": 5.234782575433477,
+      "train_r2": 0.8447827808081503,
+      "test_r2": 0.8825263716741018,
+      "r2_gap": -0.03774359086595147,
+      "test_rmse": 18.695809948110913,
+      "test_mae": 11.641499761644516,
+      "test_clinical_accuracy": 0.84,
+      "test_clinical_f1_macro": 0.7662090007627764,
+      "model_details": {
+        "estimator_type": "SVR"
+      },
+      "runtime_seconds": 0.029
+    },
+    {
+      "model_name": "DummyRegressor",
+      "cv_r2_mean": -0.06843609267743567,
+      "cv_r2_std": 0.07601309810250684,
+      "cv_rmse_mean": 53.067109795443365,
+      "cv_rmse_std": 11.21356821023251,
+      "cv_mae_mean": 40.44383452453656,
+      "cv_mae_std": 7.598953558815173,
+      "train_r2": 0.0,
+      "test_r2": -0.00013166433681033318,
+      "r2_gap": 0.00013166433681033318,
+      "test_rmse": 54.550995685559975,
+      "test_mae": 41.37728379611014,
+      "test_clinical_accuracy": 0.08,
+      "test_clinical_f1_macro": 0.04938271604938271,
+      "model_details": {
+        "estimator_type": "DummyRegressor"
+      },
+      "runtime_seconds": 1.847
+    }
+  ],
+  "artifact_paths": {
+    "comparison_report": "src/models/model_comparison/comparison_report.json",
+    "comparison_table": "src/models/model_comparison/comparison_table.csv",
+    "predictions": "src/models/model_comparison/predictions.npz",
+    "best_model": "src/models/model_comparison/best_model.pkl"
+  }
+}
