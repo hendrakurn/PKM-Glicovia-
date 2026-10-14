@@ -1,0 +1,14 @@
+# Virtual environment
+venv/
+.venv/
+__pycache__/
+*.pyc
+
+# Agent / Tool local caches
+.codegraph/
+.codex/
+.playwright-mcp/
+app/web/.playwright-mcp/
+
+# Redundant archives
+resource.zip
