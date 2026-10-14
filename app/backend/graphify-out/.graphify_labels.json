@@ -1,0 +1,20 @@
+{
+  "0": "readings.service.ts",
+  "1": "package.json",
+  "2": "auth.ts",
+  "3": "device.repository.ts",
+  "4": "auth.service.ts",
+  "5": "API Detail",
+  "6": "mqtt-handler.ts",
+  "7": "app.ts",
+  "8": "Panduan Testing MQTT Hardware GLICOVIA",
+  "9": "inference.service.ts",
+  "10": "Checklist Selesai",
+  "11": "pairing.service.ts",
+  "12": "Hermes Master Prompt For GLICOVIA Backend",
+  "13": "compilerOptions",
+  "14": "express.d.ts",
+  "15": "crypto.ts",
+  "16": "dates.ts",
+  "17": "apply_migrations.sh"
+}
