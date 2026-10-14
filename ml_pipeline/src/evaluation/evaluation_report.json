@@ -1,13 +1,13 @@
 {
   "model_type": "SVR",
-  "evaluation_timestamp": "2026-07-04T02:16:38Z",
+  "evaluation_timestamp": "2026-09-12T06:41:56Z",
   "regression_metrics": {
-    "rmse": 23.82322621852433,
-    "rmse_percent_of_mean": 22.476743633136838,
-    "mae": 10.942304345973527,
-    "mae_percent_of_mean": 10.32384813392586,
-    "r2": 0.9124180927441372,
-    "mean_target": 105.99055898561039
+    "rmse": 9.154638985456737,
+    "rmse_percent_of_mean": 7.564170553612472,
+    "mae": 6.911176542940475,
+    "mae_percent_of_mean": 5.710472928531261,
+    "r2": 0.9718334108812547,
+    "mean_target": 121.02634281672422
   },
   "classification_metrics": {},
   "clinical_assessment": {

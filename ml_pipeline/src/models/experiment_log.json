@@ -37,7 +37,7 @@
           12
         ]
       ],
-      "runtime_seconds": 0.001
+      "runtime_seconds": 0.002
     },
     {
       "fold": 1,
@@ -68,7 +68,7 @@
           7
         ]
       ],
-      "runtime_seconds": 0.002
+      "runtime_seconds": 0.003
     },
     {
       "fold": 2,
@@ -99,7 +99,7 @@
           6
         ]
       ],
-      "runtime_seconds": 0.001
+      "runtime_seconds": 0.002
     },
     {
       "fold": 3,
@@ -130,7 +130,7 @@
           4
         ]
       ],
-      "runtime_seconds": 0.001
+      "runtime_seconds": 0.002
     },
     {
       "fold": 4,
@@ -161,7 +161,7 @@
           9
         ]
       ],
-      "runtime_seconds": 0.003
+      "runtime_seconds": 0.002
     }
   ],
   "overfitting_detected": false,
@@ -211,6 +211,6 @@
     ]
   ],
   "gap_warning": false,
-  "timestamp": "2026-07-26T04:47:27Z",
-  "training_duration_seconds": 2.884
+  "timestamp": "2026-09-12T06:41:56Z",
+  "training_duration_seconds": 3.118
 }
