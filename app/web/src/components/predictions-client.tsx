@@ -243,7 +243,7 @@ export function PredictionsClient() {
               <Field label="artifact_url">
                 <input className="glico-input" value={modelForm.artifact_url} onChange={(event) => setModelForm((current) => ({ ...current, artifact_url: event.target.value }))} placeholder="Optional artifact URL" />
               </Field>
-              <div className="grid gap-4 sm:grid-cols-2">
+              <div className="grid gap-4">
                 <Field label="trained_at">
                   <input className="glico-input" type="datetime-local" value={modelForm.trained_at} onChange={(event) => setModelForm((current) => ({ ...current, trained_at: event.target.value }))} />
                 </Field>
