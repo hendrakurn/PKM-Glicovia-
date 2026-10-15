@@ -7,7 +7,7 @@ let client: MqttClient | null = null;
 
 function buildSubscribeTopic(): string {
   const prefix = env.MQTT_TOPIC_PREFIX.trim();
-  return prefix ? `${prefix}/#` : '#';
+  return prefix ? `${prefix}/devices/+/readings` : 'devices/+/readings';
 }
 
 function buildOptions(): IClientOptions {

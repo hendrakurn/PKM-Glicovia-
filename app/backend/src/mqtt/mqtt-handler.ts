@@ -54,6 +54,9 @@ function determineQualityFlag(payload: Record<string, unknown> | null, rawPayloa
 }
 
 export async function handleMqttMessage(topic: string, payloadBuffer: Buffer): Promise<void> {
+  if (!topic.endsWith('/readings')) {
+    return;
+  }
   const { rawPayload, payload } = parsePayload(payloadBuffer);
   const resolution = parseTopicResolution(topic, env.MQTT_TOPIC_PREFIX);
 
