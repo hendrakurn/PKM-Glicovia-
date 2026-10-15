@@ -70,3 +70,20 @@ export async function stopMqttClient(): Promise<void> {
     current.end(false, {}, () => resolve());
   });
 }
+
+export function publishMqttMessage(topic: string, payload: string): Promise<boolean> {
+  return new Promise((resolve) => {
+    if (!client || !client.connected) {
+      logger.warn('MQTT client not connected; cannot publish message', { topic });
+      return resolve(false);
+    }
+    client.publish(topic, payload, { qos: 0 }, (error) => {
+      if (error) {
+        logger.error('Failed to publish MQTT message', { topic, error });
+        return resolve(false);
+      }
+      resolve(true);
+    });
+  });
+}
+

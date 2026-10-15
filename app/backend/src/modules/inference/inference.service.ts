@@ -4,6 +4,8 @@ import { logger } from '../../config/logger';
 import { getSensorReadingById, type SensorReadingRow } from '../readings/readings.repository';
 import { upsertDeployedModelVersion, type ModelVersionRow } from '../models/models.repository';
 import { savePredictionResult, type PredictionResultRow } from '../predictions/predictions.repository';
+import { getDeviceById } from '../devices/device.repository';
+import { publishMqttMessage } from '../../mqtt/mqtt-client';
 
 export interface MlPredictionPayload {
   id: string;
@@ -244,6 +246,29 @@ export async function triggerInferenceForSensorReading(reading: SensorReadingRow
       modelVersionId: result.modelVersion.id,
       inferenceStatus: result.prediction.inference_status
     });
+
+    if (result.prediction.inference_status === 'success' && reading.device_id) {
+      try {
+        const device = await getDeviceById(reading.device_id);
+        if (device) {
+          const predictionTopic = `${env.MQTT_TOPIC_PREFIX}/devices/${device.device_code}/predictions`;
+          const payload = JSON.stringify({
+            device_code: device.device_code,
+            glucose_estimate: Number(result.prediction.glucose_estimate),
+            clinical_category: result.prediction.clinical_category,
+            confidence_score: Number(result.prediction.confidence_score),
+            timestamp: result.prediction.predicted_at
+          });
+          await publishMqttMessage(predictionTopic, payload);
+          logger.info('Inference prediction published to MQTT for device', {
+            topic: predictionTopic,
+            deviceCode: device.device_code
+          });
+        }
+      } catch (pubErr) {
+        logger.warn('Failed to publish prediction to MQTT', { error: pubErr });
+      }
+    }
   } catch (error) {
     logger.warn('Inference failed for stored sensor reading', {
       sensorReadingId: reading.id,
