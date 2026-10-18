@@ -12,3 +12,4 @@ app/web/.playwright-mcp/
 
 # Redundant archives
 resource.zip
+graphify-out/cache/
