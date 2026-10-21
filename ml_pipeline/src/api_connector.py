@@ -20,16 +20,21 @@ logger = logging.getLogger(__name__)
 
 app = FastAPI(title="GlicoSaliva ML API", version="2.0.0")
 
-MODEL_PATH = str(Path(__file__).resolve().parent / "models" / "best_model.pkl")
-SCALER_PATH = str(Path(__file__).resolve().parent / "data" / "processed" / "scaler_params.json")
+MODEL_PATH = os.environ.get("GLICO_MODEL_PATH") or str(Path(__file__).resolve().parent / "models" / "best_model.pkl")
+# GLICO_MODEL_PATH menunjuk ke model data nyata (train_real.py): masukan berupa sinyal alat
+# (volt bila belum terkalibrasi), jadi batas dilonggarkan menjadi batas kewajaran saja.
+# Pipeline model itu menskala sendiri; scaler dummy di bawah harus mati, kalau tidak masukan
+# terskala dua kali ("" = tanpa scaler eksternal, lihat predict_single).
+USING_REAL_MODEL = bool(os.environ.get("GLICO_MODEL_PATH"))
+SCALER_PATH = "" if USING_REAL_MODEL else str(Path(__file__).resolve().parent / "data" / "processed" / "scaler_params.json")
 
 required_fields = ["glucose_saliva", "ph_value", "fructosamine_umol_l"]
 features = required_fields.copy()
-ranges = {
-    "glucose_saliva": (0.1, 10.0),
-    "ph_value": (4.0, 9.0),
-    "fructosamine_umol_l": (150.0, 500.0),
-}
+ranges = (
+    {"glucose_saliva": (0.0, 1000.0), "ph_value": (0.0, 14.0), "fructosamine_umol_l": (0.0, 1000.0)}
+    if USING_REAL_MODEL
+    else {"glucose_saliva": (0.1, 10.0), "ph_value": (4.0, 9.0), "fructosamine_umol_l": (150.0, 500.0)}
+)
 
 MODEL_INFO = {
     "model_name": "GlicoSaliva SVR",
@@ -38,6 +43,12 @@ MODEL_INFO = {
     "target": "bg_mgdl_reference",
     "classes": ["Normal", "Pre-Diabetes", "Diabetes"],
 }
+if USING_REAL_MODEL:
+    _meta_path = Path(MODEL_PATH).with_suffix(".json")
+    if _meta_path.exists():
+        _meta = json.loads(_meta_path.read_text(encoding="utf-8"))
+        MODEL_INFO["model_name"] = _meta["model_name"]
+        MODEL_INFO["version"] = f"real-{_meta['version']}"
 
 
 class PredictionInput(BaseModel):

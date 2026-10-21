@@ -157,6 +157,13 @@ async function resolveModelVersion(): Promise<ModelVersionRow> {
   });
 }
 
+// Firmware mengirim ph = null sebelum kalibrasi; volt mentahnya ada di raw_payload.raw.v_ph.
+function rawVolt(reading: SensorReadingRow, key: string): number | null {
+  const raw = (reading.raw_payload as { raw?: Record<string, unknown> } | null)?.raw;
+  const value = raw?.[key];
+  return typeof value === 'number' && Number.isFinite(value) ? value : null;
+}
+
 export function mapSensorReadingToMlPayload(reading: SensorReadingRow): MlPredictionPayload {
   if (reading.quality_flag === 'incomplete') {
     throw httpError('Sensor reading is incomplete and cannot be sent to inference', 422);
@@ -164,9 +171,9 @@ export function mapSensorReadingToMlPayload(reading: SensorReadingRow): MlPredic
 
   return {
     id: reading.id,
-    glucose_saliva: asFiniteNumber(reading.salivary_glucose, 'salivary_glucose'),
-    ph_value: asFiniteNumber(reading.ph, 'ph'),
-    fructosamine_umol_l: asFiniteNumber(reading.fructosamine, 'fructosamine')
+    glucose_saliva: asFiniteNumber(reading.salivary_glucose ?? rawVolt(reading, 'v_glu'), 'salivary_glucose'),
+    ph_value: asFiniteNumber(reading.ph ?? rawVolt(reading, 'v_ph'), 'ph'),
+    fructosamine_umol_l: asFiniteNumber(reading.fructosamine ?? rawVolt(reading, 'v_fru'), 'fructosamine')
   };
 }
 
