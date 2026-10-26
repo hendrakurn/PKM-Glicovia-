@@ -1,0 +1,178 @@
+\documentclass[12pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[indonesian]{babel}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{geometry}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\usepackage{xcolor}
+
+\geometry{
+    top=2.5cm,
+    bottom=2.5cm,
+    left=3cm,
+    right=2.5cm
+}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    urlcolor=blue,
+    citecolor=blue
+}
+
+\title{\textbf{Landasan Teori Elektrokimia dan Geometri Analitik\\pada Kalibrasi Sensor pH Potensiometrik (SPCE)}}
+\author{Tim Riset Glicovia}
+\date{20 Oktober 2026}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+Dokumen ini menyajikan penurunan matematis dan fisis yang menghubungkan Persamaan Nernst dalam termodinamika elektrokimia dengan model kalibrasi linier dua-titik (\textit{two-point calibration}) berbasis geometri analitik. Penurunan ini menjadi dasar konversi tegangan keluaran analog dari elektroda karbon tercetak (\textit{Screen-Printed Carbon Electrode} / SPCE) yang terbaca oleh ADC 16-bit ADS1115 menjadi besaran derajat keasaman (pH) murni pada mikrokontroler.
+\end{abstract}
+
+\vspace{0.5cm}
+
+\section{Dasar Elektrokimia: Persamaan Nernst}
+
+Dalam sistem potensiometri tanpa arus (\textit{zero-current potentiometry}), elektroda kerja merespons perubahan aktivitas ion hidrogen ($\text{H}^+$) pada antarmuka larutan. Hubungan termodinamika antara energi bebas Gibbs ($\Delta G$) dan reaksi redoks dinyatakan oleh:
+
+\begin{equation}
+\Delta G = \Delta G^0 + R \cdot T \cdot \ln Q
+\end{equation}
+
+Mengingat $\Delta G = -n \cdot F \cdot E$ dan $\Delta G^0 = -n \cdot F \cdot E^0$, persamaan dapat ditulis ulang menjadi Persamaan Nernst klasik:
+
+\begin{equation}
+E = E^0 - \frac{R \cdot T}{n \cdot F} \cdot \ln Q
+\end{equation}
+
+Untuk elektroda peka ion hidrogen dengan reaksi reduksi $\text{H}^+ + e^- \rightleftharpoons \frac{1}{2}\text{H}_2$, nilai elektron valensi $n = 1$, dan aktivitas dinyatakan oleh $a_{\text{H}^+}$. Dengan mengonversi logaritma natural ($\ln$) ke logaritma basis 10 ($\log_{10}$) menggunakan faktor $\ln(10) \approx 2.302585$, diperoleh:
+
+\begin{equation}
+E = E^0 - \frac{2.303 \cdot R \cdot T}{F} \cdot (-\log_{10} a_{\text{H}^+})
+\end{equation}
+
+Mengingat definisi keasaman menurut Sørensen adalah $\text{pH} = -\log_{10} a_{\text{H}^+}$, persamaan tereduksi menjadi:
+
+\begin{equation}
+\label{eq:nernst_ph}
+E = E^0 - S_{\text{teori}} \cdot \text{pH}
+\end{equation}
+
+di mana $S_{\text{teori}}$ adalah kemiringan Nernstian ideal (\textit{Nernstian slope}):
+\begin{equation}
+S_{\text{teori}} = \frac{2.303 \cdot R \cdot T}{F}
+\end{equation}
+
+\noindent Konstanta yang digunakan pada temperatur standar laboratorium ($T = 298.15\text{ K}$ / $25^\circ\text{C}$):
+\begin{itemize}
+    \item Konstanta gas universal ($R$) = $8.31446\text{ J}\cdot\text{mol}^{-1}\cdot\text{K}^{-1}$
+    \item Konstanta Faraday ($F$) = $96485.33\text{ C}\cdot\text{mol}^{-1}$
+\end{itemize}
+
+\noindent Menghasilkan:
+\begin{equation}
+S_{\text{teori}} \approx \frac{2.303 \times 8.31446 \times 298.15}{96485.33} \approx 0.05916\text{ V/unit pH} = 59.16\text{ mV/unit pH}
+\end{equation}
+
+\noindent \textbf{Interpretasi Fisis}:
+\begin{enumerate}
+    \item Potensial sel ($E$) berbanding terbalik secara linier terhadap nilai pH.
+    \item Penurunan konsentrasi $\text{H}^+$ (kenaikan pH) sebesar 1 unit menghasilkan penurunan tegangan potensial sebesar $59.16\text{ mV}$ pada elektroda ideal.
+\end{enumerate}
+
+\section{Pemetaan ke Model Linier ($y = mx + c$)}
+
+Persamaan Nernst pada Persamaan (\ref{eq:nernst_ph}) memiliki bentuk fungsional yang setara secara aljabar dengan persamaan garis lurus Cartesius:
+
+\begin{equation}
+\label{eq:garis_lurus}
+y = m \cdot x + c
+\end{equation}
+
+\noindent Korelasi variabel fisik terhadap variabel analitik adalah sebagai berikut:
+\begin{align*}
+y &\longleftrightarrow E \quad \text{(Tegangan keluaran yang terukur oleh ADC, dalam Volt)} \\
+x &\longleftrightarrow \text{pH} \quad \text{(Nilai derajat keasaman sampel)} \\
+m &\longleftrightarrow -S \quad \text{(Sensitivitas atau kemiringan riil elektroda, bernilai negatif)} \\
+c &\longleftrightarrow E^0 \quad \text{(Potensial dasar / offset saat pH = 0)}
+\end{align*}
+
+Pada sensor berbasis SPCE (\textit{Screen-Printed Carbon Electrode}) dan elektroda referensi semu (\textit{pseudo-reference} $\text{Ag/AgCl}$), elektroda tidak beroperasi pada kondisi Nernstian ideal ($59.16\text{ mV/pH}$) melainkan bersifat \textit{sub-Nernstian}. Oleh karena itu, parameter $m$ dan $c$ tidak dapat ditentukan secara apriori, melainkan harus diestimasi melalui kalibrasi empiris.
+
+\section{Dasar Matematika Geometri Analitik 2-Titik}
+
+Untuk menentukan garis lurus unik pada bidang dua dimensi dibutuhkan tepat dua titik koordinat $(\text{pH}, V)$. Dipilih dua larutan penyangga standar (\textit{buffer}):
+\begin{itemize}
+    \item Titik 1: $(x_1, y_1) = (\text{pH}_1, V_1)$
+    \item Titik 2: $(x_2, y_2) = (\text{pH}_2, V_2)$
+\end{itemize}
+
+\subsection{Penurunan Rumus Kemiringan (\textit{Slope}, $m$)}
+
+Gradien atau kemiringan didefinisikan sebagai laju perubahan ordinat terhadap absis:
+\begin{equation}
+m = \frac{\Delta y}{\Delta x} = \frac{y_2 - y_1}{x_2 - x_1}
+\end{equation}
+
+Substitusi besaran fisis:
+\begin{equation}
+\label{eq:slope_formula}
+m = \frac{V_2 - V_1}{\text{pH}_2 - \text{pH}_1} \quad \left[\frac{\text{V}}{\text{unit pH}}\right]
+\end{equation}
+
+Karena tegangan menurun seiring bertambahnya pH ($V_2 < V_1$ jika $\text{pH}_2 > \text{pH}_1$), nilai $m$ selalu bernilai negatif.
+
+\subsection{Penurunan Rumus Titik Potong / Offset ($c$)}
+
+Dari persamaan dasar $y = m \cdot x + c$, komponen konstanta $c$ dapat diisolasi:
+\begin{equation}
+c = y - (m \cdot x)
+\end{equation}
+
+Dengan mensubstitusikan koordinat Titik 1 $(x_1, y_1)$:
+\begin{equation}
+\label{eq:intercept_formula}
+c = V_1 - (m \cdot \text{pH}_1) \quad [\text{V}]
+\end{equation}
+
+\subsection{Penurunan Rumus Estimasi pH dari Tegangan ADC}
+
+Saat mikrokontroler membaca tegangan operasional dari sensor ($V_{\text{ADC}}$), nilai pH diperoleh dengan menginversi Persamaan (\ref{eq:garis_lurus}):
+\begin{align}
+V_{\text{ADC}} &= m \cdot \text{pH} + c \nonumber \\
+m \cdot \text{pH} &= V_{\text{ADC}} - c \nonumber \\
+\text{pH} &= \frac{V_{\text{ADC}} - c}{m} \label{eq:ph_calc}
+\end{align}
+
+\section{Aplikasi pada Sensor Glicovia (SPCE + ADS1115)}
+
+Berdasarkan pengujian perangkat keras Glicovia:
+\begin{itemize}
+    \item Standar Buffer 1: $\text{pH}_1 = 4.01$, dengan tegangan terukur stabil $V_1 = 0.0768\text{ V}$ ($76.8\text{ mV}$).
+    \item Standar Buffer 2: $\text{pH}_2 = 7.00$, dengan tegangan terukur stabil $V_2$ (diperoleh dari pengujian berikutnya).
+\end{itemize}
+
+Substitusi nilai ke dalam Persamaan (\ref{eq:slope_formula}) dan (\ref{eq:intercept_formula}):
+\begin{equation}
+m = \frac{V_2 - 0.0768}{7.00 - 4.01}
+\end{equation}
+\begin{equation}
+c = 0.0768 - (m \times 4.01)
+\end{equation}
+
+Setelah nilai numerik $m$ dan $c$ diperoleh, Persamaan (\ref{eq:ph_calc}) diterapkan langsung dalam firmware ESP32 untuk menghasilkan pembacaan pH real-time.
+
+\section{Ringkasan dan Validasi Ilmiah}
+
+Metode interpolasi linier dua-titik ini bukan sekadar pendekatan empiris tanpa dasar, melainkan penerapan langsung dari:
+\begin{enumerate}
+    \item \textbf{Prinsip Termodinamika Nernst} yang menjamin kelinearan respon potensial terhadap logaritma aktivitas ionik dalam rentang konsentrasi saliva fisiologis ($\text{pH } 5.5 - 8.0$).
+    \item \textbf{Standar Baku Industri (IUPAC \& ASTM D1293)} yang mewajibkan kalibrasi multi-titik menggunakan larutan penyangga terstandarisasi untuk mengeliminasi ketidakpastian potensial sambungan cair (\textit{liquid junction potential}) dan variasi elektroda cetak.
+\end{enumerate}
+
+\end{document}

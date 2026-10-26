@@ -1,0 +1,113 @@
+\documentclass[12pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[indonesian]{babel}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{geometry}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{hyperref}
+
+\geometry{
+    top=2.5cm,
+    bottom=2.5cm,
+    left=3cm,
+    right=2.5cm
+}
+
+\title{\textbf{Slope dan Offset pada Kalibrasi Sensor pH:\\Teori, Perhitungan, dan Penggunaan di Firmware}}
+\author{Tim Riset Glicovia}
+\date{20 Oktober 2026}
+
+\begin{document}
+
+\maketitle
+
+\section{Persamaan Nernst}
+
+Elektroda pH menghasilkan tegangan $E$ yang bergantung pada konsentrasi ion $\text{H}^+$:
+\begin{equation}
+E = E^0 - \frac{2.303 \cdot R \cdot T}{F} \cdot \text{pH}
+\end{equation}
+
+Persamaan ini berbentuk garis lurus $y = m \cdot x + c$, dengan pemetaan pada Tabel~\ref{tab:simbol}.
+
+\begin{table}[h]
+\centering
+\begin{tabular}{@{}llp{6.5cm}@{}}
+\toprule
+Simbol & Di sensor & Arti \\
+\midrule
+$y$ & tegangan $V$ yang dibaca ADC & keluaran sensor \\
+$x$ & pH & besaran yang ingin dicari \\
+$m$ (\texttt{PH\_SLOPE}) & $-2.303\,R\,T/F$ & besar perubahan tegangan per 1 unit pH \\
+$c$ (\texttt{PH\_OFFSET}) & $E^0$ & tegangan saat pH $= 0$ (titik potong sumbu $V$) \\
+\bottomrule
+\end{tabular}
+\caption{Pemetaan persamaan Nernst ke persamaan garis lurus.}
+\label{tab:simbol}
+\end{table}
+
+\section{Arti Slope dan Offset}
+
+\paragraph{Slope ($m$)} adalah kemiringan garis. Secara teori, pada $25^\circ\text{C}$:
+\begin{equation}
+m = \frac{2.303 \times 8.314 \times 298.15}{96485} = 0.05916\ \text{V/pH} = 59.16\ \text{mV/pH}
+\end{equation}
+Tandanya negatif karena makin asam (pH kecil), tegangan makin tinggi. Pada SPCE, slope nyata biasanya lebih kecil (\textit{sub-Nernstian}), misalnya $-45$ sampai $-58\ \text{mV/pH}$. Karena itu sensor harus dikalibrasi, bukan memakai nilai $59.16\ \text{mV/pH}$ secara langsung.
+
+\paragraph{Offset ($c$)} menggeser garis naik atau turun. Nilainya bergantung pada bahan elektroda, elektroda referensi, dan rangkaian penguat, sehingga berbeda untuk setiap sensor.
+
+\section{Cara Menghitung}
+
+Ukur larutan penyangga (\textit{buffer}) yang pH-nya diketahui, lalu cari garis yang melewati titik-titik tersebut. Landasannya adalah geometri analitik (garis lurus) dan regresi linier kuadrat terkecil.
+
+\subsection{Dua titik}
+
+Dari titik $(\text{pH}_1, V_1)$ dan $(\text{pH}_2, V_2)$:
+\begin{align}
+m &= \frac{V_2 - V_1}{\text{pH}_2 - \text{pH}_1} \label{eq:m2}\\
+c &= V_1 - m \cdot \text{pH}_1 \label{eq:c2}
+\end{align}
+
+\paragraph{Contoh angka (hipotetis, bukan data pengukuran).}
+Misalkan pH $4.01$ terbaca $0.2000\ \text{V}$ dan pH $7.00$ terbaca $0.0300\ \text{V}$. Maka
+\begin{align*}
+m &= \frac{0.0300 - 0.2000}{7.00 - 4.01} = \frac{-0.1700}{2.99} = -0.05686\ \text{V/pH} \quad (-56.9\ \text{mV/pH})\\
+c &= 0.2000 - (-0.05686 \times 4.01) = 0.2000 + 0.2280 = 0.4280\ \text{V}
+\end{align*}
+Pemeriksaan untuk pH $7.00$: $-0.05686 \times 7 + 0.4280 = 0.0300\ \text{V}$.
+
+\subsection{Tiga titik atau lebih (regresi)}
+
+Dicari $m$ dan $c$ yang meminimalkan jumlah kuadrat selisih
+\begin{equation}
+\sum_i \bigl(V_i - (m\,\text{pH}_i + c)\bigr)^2
+\end{equation}
+dengan solusi
+\begin{align}
+m &= \frac{\sum_i (\text{pH}_i - \overline{\text{pH}})(V_i - \overline{V})}{\sum_i (\text{pH}_i - \overline{\text{pH}})^2} \\
+c &= \overline{V} - m\,\overline{\text{pH}}
+\end{align}
+Perhitungan ini dilakukan oleh \texttt{np.polyfit(ph, volt, 1)} pada \texttt{calibrate.py}. Titik ketiga berguna untuk memeriksa kelinearan sensor melalui koefisien determinasi $R^2$.
+
+\section{Penggunaan di Firmware}
+
+Pembacaan $V$ dari kanal A2 ADS1115 diubah menjadi pH dengan membalik persamaan garis:
+\begin{equation}
+\text{pH} = \frac{V - c}{m}
+\end{equation}
+Pada contoh di atas, sampel yang terbaca $0.1000\ \text{V}$ menghasilkan
+\[
+\text{pH} = \frac{0.1000 - 0.4280}{-0.05686} = 5.77
+\]
+
+\section{Catatan Teori}
+
+\begin{itemize}
+    \item Persamaan Nernst mengasumsikan suhu $25^\circ\text{C}$. Slope berubah sekitar $0.2\ \text{mV/pH}$ per $^\circ\text{C}$. Jika suhu saliva ($\approx 35^\circ\text{C}$) berbeda jauh dari suhu kalibrasi, timbul galat kecil. Untuk akurasi lebih baik, kalibrasi dilakukan pada suhu yang mendekati kondisi pemakaian.
+    \item Garis lurus hanya berlaku di antara titik kalibrasi. Di luar rentang itu, hasil merupakan ekstrapolasi.
+    \item Jika slope hasil kalibrasi jauh dari $-59\ \text{mV/pH}$ (misalnya $-5\ \text{mV/pH}$), sensor tidak merespons pH dengan baik.
+\end{itemize}
+
+\end{document}

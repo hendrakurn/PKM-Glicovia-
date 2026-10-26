@@ -1,0 +1,141 @@
+\documentclass[12pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[indonesian]{babel}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{geometry}
+\usepackage{booktabs}
+\usepackage{listings}
+\usepackage{hyperref}
+
+\geometry{top=2.5cm,bottom=2.5cm,left=3cm,right=2.5cm}
+\lstset{basicstyle=\ttfamily\small,breaklines=true,frame=single}
+
+\title{\textbf{Perhitungan Kalibrasi pH Glicovia dengan \texttt{calibrate.py}:\\Kasus Data Aktual dan Cara Memperoleh \texttt{PH\_SLOPE} dan \texttt{PH\_OFFSET}}}
+\author{Tim Riset Glicovia}
+\date{20 Oktober 2026}
+
+\begin{document}
+
+\maketitle
+
+\section{Tujuan}
+
+Mengubah tegangan kanal A2 ADS1115 ($V$, volt) menjadi nilai pH di firmware ESP32 menggunakan model linier
+\begin{equation}
+V = m \cdot \text{pH} + c \qquad\Longleftrightarrow\qquad \text{pH} = \frac{V - c}{m}
+\end{equation}
+dengan $m$ = \texttt{PH\_SLOPE} (V/pH) dan $c$ = \texttt{PH\_OFFSET} (V). Kedua konstanta ini adalah keluaran akhir \texttt{calibrate.py}.
+
+\section{Cara Kerja \texttt{calibrate.py}}
+
+Skrip dijalankan dengan argumen \texttt{file.csv:pH\_buffer}, satu argumen untuk tiap larutan buffer:
+\begin{lstlisting}
+python calibrate.py data_log/pH_4.01.csv:4.01 data_log/pH_7.00.csv:7.00 data_log/pH_10.01.csv:10.01
+\end{lstlisting}
+
+Untuk setiap file, skrip melakukan:
+\begin{enumerate}
+    \item \textbf{Membaca tegangan pH} (\texttt{read\_volts}). Kolom \texttt{pH\_Volt} dipakai bila ada pada header; bila tidak (format log lama), dipakai kolom ke-7, yaitu tegangan A2. Baris yang jumlah kolomnya bukan 7 atau bukan angka dibuang. Nilai di luar $0 < V < 1\ \text{V}$ dibuang karena itu kondisi elektroda kering/mengambang.
+    \item \textbf{Mencari jendela stabil} (\texttt{stable\_mean}). Lebar jendela 15 detik $= 60$ sampel (periode sampel $0.25$ s). Jendela digeser dari akhir rekaman ke awal. Jendela pertama yang memenuhi
+    \begin{equation}
+    \sigma_{\text{jendela}} < 2\ \text{mV} \quad\text{dan}\quad \bigl|\overline{V}_{\text{separuh akhir}} - \overline{V}_{\text{separuh awal}}\bigr| < 2\ \text{mV}
+    \end{equation}
+    dipilih, dan rata-ratanya menjadi tegangan buffer tersebut. Jika tidak ada jendela yang lolos, skrip berhenti dengan pesan galat.
+    \item \textbf{Menyusun pasangan} $(\text{pH}_i, V_i)$ dari semua buffer.
+\end{enumerate}
+
+Setelah semua file diproses, skrip mencocokkan garis dengan \texttt{numpy.polyfit(ph, volt, 1)} (kuadrat terkecil), menghitung $R^2$ bila titik $\geq 3$, memeriksa kewajaran slope, lalu mencetak \texttt{PH\_SLOPE} dan \texttt{PH\_OFFSET}.
+
+\section{Data Aktual Glicovia}
+
+Data berasal dari folder \texttt{data\_log/}, dihitung dengan fungsi \texttt{read\_volts} dan \texttt{stable\_mean} pada \texttt{calibrate.py} (jendela 15 s, batas simpangan baku 2 mV).
+
+\begin{table}[h]
+\centering
+\begin{tabular}{@{}lcccc@{}}
+\toprule
+Sampel & Sampel valid & Mulai jendela (indeks) & $\overline{V}$ stabil (mV) & $\sigma$ (mV) \\
+\midrule
+Buffer pH 4.01 & 241 & 181 & 85.36 & 0.23 \\
+Saliva sesi 1  & 229 & 169 & 72.27 & 0.74 \\
+Saliva sesi 2  & 240 & 180 & 71.69 & 0.82 \\
+\bottomrule
+\end{tabular}
+\caption{Hasil jendela stabil \texttt{calibrate.py} pada data yang tersedia.}
+\end{table}
+
+\paragraph{Catatan.} Tegangan buffer pH 4.01 menurut \texttt{calibrate.py} adalah $85.36\ \text{mV}$ (rentang data $84.8$--$85.8\ \text{mV}$), bukan $76.8\ \text{mV}$ seperti pada \texttt{analisis\_uji\_ph\_saliva.md}. Angka dari \texttt{calibrate.py} dipakai di sini karena langsung dihitung dari berkas CSV.
+
+\section{Status Kalibrasi: Baru Satu Titik}
+
+Saat ini baru ada \textbf{satu} buffer, yaitu pH $4.01$ ($V_1 = 85.36\ \text{mV}$). Garis lurus memerlukan minimal dua titik, sehingga \texttt{PH\_SLOPE} dan \texttt{PH\_OFFSET} \textbf{belum dapat ditentukan}. Bila dijalankan dengan satu titik, \texttt{calibrate.py} berhenti dengan pesan \textit{``Butuh minimal 2 buffer pH berbeda.''}
+
+Saliva \textbf{tidak boleh} dipakai sebagai titik kalibrasi karena pH-nya tidak diketahui; ia adalah sampel yang ingin diukur.
+
+\section{Cara Memperoleh \texttt{PH\_SLOPE} dan \texttt{PH\_OFFSET}}
+
+\subsection{Langkah pengukuran}
+\begin{enumerate}
+    \item Ukur buffer pH $7.00$ (60 detik) dan, bila tersedia, pH $10.01$, dengan \texttt{log\_sensor.py -l "pH\_7.00" -d 60}. Bilas elektroda dengan akuades dan keringkan di antara buffer.
+    \item Jalankan \texttt{calibrate.py} dengan semua file buffer.
+    \item Salin dua baris \texttt{const float PH\_SLOPE} dan \texttt{PH\_OFFSET} dari keluaran ke firmware.
+\end{enumerate}
+
+\subsection{Perhitungan dengan dua titik}
+Dengan $V_1 = 85.36\ \text{mV}$ pada $\text{pH}_1 = 4.01$ dan $V_2$ hasil pengukuran buffer $7.00$:
+\begin{align}
+\texttt{PH\_SLOPE} = m &= \frac{V_2 - 0.08536}{7.00 - 4.01} \\
+\texttt{PH\_OFFSET} = c &= 0.08536 - m \times 4.01
+\end{align}
+$V_2$ belum tersedia, sehingga nilai numerik $m$ dan $c$ belum dapat ditulis.
+
+\subsection{Perhitungan dengan tiga titik atau lebih}
+\texttt{numpy.polyfit} menghitung
+\begin{align}
+m &= \frac{\sum_i (\text{pH}_i - \overline{\text{pH}})(V_i - \overline{V})}{\sum_i (\text{pH}_i - \overline{\text{pH}})^2} \\
+c &= \overline{V} - m\,\overline{\text{pH}}
+\end{align}
+
+\subsection{Cara membaca keluaran}
+\begin{center}
+\begin{tabular}{@{}lp{9cm}@{}}
+\toprule
+Keluaran & Arti dan kriteria \\
+\midrule
+\texttt{Slope m} & Sensitivitas sensor. Skrip membandingkannya dengan Nernst ideal $-59.16$ mV/pH. Harus negatif; sehat bila sekitar $-40$ sampai $-65$ mV/pH, di luar itu skrip memberi peringatan. \\
+\texttt{Offset c} & Tegangan teoretis pada pH $0$. \\
+\texttt{R\textasciicircum 2} & Kelinearan titik kalibrasi (hanya bermakna untuk $\geq 3$ titik); target $> 0.99$. \\
+\texttt{PH\_SLOPE}, \texttt{PH\_OFFSET} & $m$ dan $c$ dalam satuan volt, ditempel ke firmware. \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section{Perkiraan Sementara dengan Slope Nernst Ideal}
+
+\textbf{Hanya perkiraan}, bukan kalibrasi. Bila diasumsikan $m = -0.05916\ \text{V/pH}$ (Nernst ideal pada $25^\circ\text{C}$):
+\begin{equation}
+c = 0.08536 - (-0.05916 \times 4.01) = 0.08536 + 0.23723 = 0.32259\ \text{V}
+\end{equation}
+Dengan $\text{pH} = (V - c)/m$:
+\begin{align*}
+\text{Saliva sesi 1:}\quad & \frac{0.07227 - 0.32259}{-0.05916} = 4.23 \\
+\text{Saliva sesi 2:}\quad & \frac{0.07169 - 0.32259}{-0.05916} = 4.24
+\end{align*}
+
+Hasil $4.23$--$4.24$ tidak wajar untuk saliva (normal $6.4$--$7.4$). Selisih tegangan saliva terhadap buffer 4.01 hanya $13.1$--$13.7\ \text{mV}$, setara $\pm 0.22$--$0.23$ pH pada slope ideal. Ini menunjukkan bahwa slope ideal tidak dapat diasumsikan: slope sebenarnya hanya dapat ditentukan dari kalibrasi dengan buffer kedua. Bila slope sebenarnya jauh lebih kecil dari $59$ mV/pH, selisih belasan mV dapat berarti selisih pH yang jauh lebih besar, namun derau $\approx 0.8\ \text{mV}$ juga berarti resolusi pH yang lebih buruk.
+
+\section{Penggunaan di Firmware}
+
+Setelah \texttt{PH\_SLOPE} dan \texttt{PH\_OFFSET} diperoleh:
+\begin{lstlisting}[language=C++]
+const float PH_SLOPE  = /* dari calibrate.py */;  // V/pH
+const float PH_OFFSET = /* dari calibrate.py */;  // V
+
+float volts_ph   = ads.computeVolts(ads.readADC_SingleEnded(2)); // pH di A2
+float current_ph = (volts_ph - PH_OFFSET) / PH_SLOPE;
+current_ph = constrain(current_ph, 4.0, 9.0);  // rentang input model ML
+\end{lstlisting}
+Kalibrasi hanya berlaku untuk satu sensor (cartridge) dan perlu diulang bila sensor diganti atau mengalami drift.
+
+\end{document}
