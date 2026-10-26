@@ -20,7 +20,7 @@ cd ../..
 
 echo "[3/4] Starting ML API Connector (ml_pipeline)..."
 cd ml_pipeline
-venv/bin/uvicorn src.api_connector:app --host 0.0.0.0 --port 8001 &
+GLICO_MODEL_PATH=src/models/real/model_svr_units_v1.pkl GLICO_MODEL_PATH=src/models/real/model_svr_units_v1.pkl venv/bin/uvicorn src.api_connector:app --host 0.0.0.0 --port 8001 &
 cd ..
 
 echo "✅ Semua service beserta Database berjalan."
