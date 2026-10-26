@@ -1,0 +1,57 @@
+{
+  "model_name": "GlicoSaliva SVC 3 kelas",
+  "model_type": "SVC-rbf",
+  "version": "c1",
+  "trained_at": "2026-10-26T20:55:52Z",
+  "features": [
+    "v_glu",
+    "v_ph"
+  ],
+  "input_order": [
+    "v_glu",
+    "v_ph",
+    "v_fru"
+  ],
+  "classes": [
+    "NORMAL",
+    "PREDIABETES",
+    "DIABETES"
+  ],
+  "params": {
+    "C": 1.0,
+    "gamma": "scale",
+    "class_weight": "balanced"
+  },
+  "n_sessions": 11,
+  "n_subjects": 6,
+  "subjects_per_class": {
+    "NORMAL": 4,
+    "PREDIABETES": 1,
+    "DIABETES": 1
+  },
+  "loso": {
+    "f1_macro": 0.10256410256410257,
+    "confusion_matrix": [
+      [
+        2,
+        1,
+        4
+      ],
+      [
+        1,
+        0,
+        0
+      ],
+      [
+        3,
+        0,
+        0
+      ]
+    ],
+    "n_eval_sessions": 11,
+    "fn_diabetes_to_normal": 3
+  },
+  "model_not_ready": true,
+  "caveat": "Subjek per kelas < 3; PREDIABETES hanya 1 subjek sehingga tidak pernah ada di latih saat diuji. Bukan bukti akurasi.",
+  "train_csv": "train.csv"
+}

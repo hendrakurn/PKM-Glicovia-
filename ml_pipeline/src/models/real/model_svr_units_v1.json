@@ -1,0 +1,28 @@
+{
+  "model_name": "GlicoSaliva SVR (satuan riil, kalibrasi SEMENTARA)",
+  "version": "v1",
+  "trained_at": "2026-10-22T06:14:07Z",
+  "features": [
+    "ph_value",
+    "fructosamine_umol_l"
+  ],
+  "input_order": [
+    "glucose_saliva",
+    "ph_value",
+    "fructosamine_umol_l"
+  ],
+  "best_params": {
+    "svr__C": 100,
+    "svr__epsilon": 2.0,
+    "svr__gamma": 0.1
+  },
+  "n_rows": 63,
+  "n_sessions": 9,
+  "loso": {
+    "mae": 3.0414453299430333,
+    "rmse": 4.074762185389397,
+    "category_accuracy": 1.0,
+    "baseline_mae": 29.99244142101284
+  },
+  "note": "Label 88/148 (2 nilai), kalibrasi sementara, <= 2 orang. Bukan bukti akurasi prediksi glukosa."
+}
