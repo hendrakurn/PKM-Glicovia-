@@ -1,0 +1,39 @@
+<!doctype html><html lang="id"><head><meta charset="utf-8"><link rel="stylesheet" href="style.css"><title>Panel Hasil</title></head>
+<body><div class="panel" id="p" style="width:1100px;height:1452px">
+ <div class="bar"><div class="tab">5</div><h1>Hasil</h1></div>
+
+ <!-- Kartu 1: pesan utama (kotak yang tadinya kosong) -->
+ <div class="card" style="top:206px;height:420px">
+  <div style="position:absolute;left:36px;top:26px;display:flex;gap:12px;flex-wrap:nowrap;width:880px">
+   <span class="chip">DATA SIMULASI</span><span class="chip l">13 sesi · 292 jendela</span><span class="chip l">leave-one-session-out</span><span class="chip l">k = 0,44</span>
+  </div>
+  <div style="position:absolute;left:40px;top:96px;width:380px">
+   <div class="stat"><b style="font-size:84px">±92%</b><span style="font-size:22px">akurasi<br>3 kelas</span></div>
+   <div class="stat" style="margin-top:6px"><b style="font-size:84px">0,92</b><span style="font-size:22px">macro<br>F1-score</span></div>
+   <p style="margin-top:14px;font-size:21px;font-weight:700;line-height:1.3;color:#2b3d20">3 kanal gabungan &gt; 1 kanal: lebih tahan variasi antar-orang</p>
+  </div>
+  <div class="fig" style="position:absolute;left:440px;top:100px;width:472px;height:225px"><img src="assets/volt.png"></div>
+  <p class="cap" style="position:absolute;left:440px;top:336px;width:472px;font-size:19px">Tiga tingkat tegangan terpisah untuk Normal, Prediabetes, dan Diabetes.</p>
+ </div>
+
+ <!-- Kartu 2: regresi SVR -->
+ <div class="card" style="top:652px;height:370px">
+  <div class="ttl">Tegangan → Biomarka (SVR)</div>
+  <div class="fig" style="position:absolute;left:36px;right:36px;top:92px;height:196px"><img src="assets/regresi.png"></div>
+  <p class="cap" style="position:absolute;left:36px;right:36px;top:300px">MAE hanya 1,1–1,5% dari rentang tiap parameter, R² ≥ 0,997 pada sesi yang tidak dilatihkan. Regresi linear setara karena data dibuat dari rumus linear.</p>
+ </div>
+
+ <!-- Kartu 3: akurasi klasifikasi SVM -->
+ <div class="card" style="top:1048px;height:370px">
+  <div class="ttl">Akurasi Klasifikasi (SVM)</div>
+  <div class="fig" style="position:absolute;left:36px;top:92px;width:400px;height:240px"><img src="assets/cm.png"></div>
+  <div style="position:absolute;left:456px;width:456px;top:96px">
+   <table class="t"><tr><th>Kelas</th><th>Presisi</th><th>Recall</th><th>F1</th></tr>
+    <tr><td>Normal</td><td>90%</td><td>90%</td><td>90%</td></tr>
+    <tr><td>Prediabetes</td><td>89%</td><td>86%</td><td>87%</td></tr>
+    <tr><td>Diabetes</td><td>98%</td><td>99%</td><td>99%</td></tr>
+    <tr><td>Macro</td><td>93%</td><td>92%</td><td>92%</td></tr></table>
+  </div>
+  <p class="note" style="position:absolute;left:36px;right:36px;top:336px">Rerata 100 pengulangan. Belum diuji pada subjek nyata.</p>
+ </div>
+</div></body></html>

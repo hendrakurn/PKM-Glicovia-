@@ -1,0 +1,102 @@
+<!doctype html><html lang="id"><head><meta charset="utf-8"><title>Wireframe Hasil</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0} body{font-family:"DejaVu Sans",Arial,sans-serif;color:#1d2a14;background:#fff}
+#w{position:relative;width:1560px;height:1620px;background:#fff}
+.pan{position:absolute;left:24px;top:24px;width:900px;height:1572px;background:linear-gradient(180deg,#f4efaf,#f2ec96);border-radius:26px;border:3px solid #3a612c}
+.bar{position:absolute;left:28px;top:24px;width:844px;height:96px;background:linear-gradient(90deg,#2f5424,#4a7c36);border-radius:20px 50px 20px 20px;color:#fff;display:flex;align-items:center;font:800 54px/1 "DejaVu Sans";padding-left:30px;gap:24px}
+.bar small{font-size:20px;font-weight:600;opacity:.85}
+.z{position:absolute;left:28px;right:28px;border:3px solid #7c8b6c;border-radius:22px;background:#fdffcf;padding:16px 20px}
+.zt{font:800 26px/1.15 "DejaVu Sans";color:#2b4a22;display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.n{position:absolute;left:-18px;top:-18px;width:46px;height:46px;border-radius:50%;background:#d9822b;color:#fff;font:800 26px/46px "DejaVu Sans";text-align:center;box-shadow:0 2px 0 #9a5a17}
+.lt{display:inline-flex;width:34px;height:34px;border-radius:50%;background:#3a612c;color:#fff;align-items:center;justify-content:center;font-size:19px;flex:none}
+.ph{border:2px dashed #8fa074;border-radius:12px;background:#eef6d2;color:#56663f;font-size:16px;display:flex;align-items:center;justify-content:center;text-align:center;padding:6px}
+.t{font-size:19px;line-height:1.35;color:#33442a}
+.hl{background:linear-gradient(transparent 52%,#f6c453 52%);font-weight:800;color:#1d2a14}
+.big{font:800 62px/1 "DejaVu Sans"}
+.warn{display:inline-block;border:2px solid #b5651d;color:#8a4a12;background:#fff4e2;border-radius:8px;padding:2px 9px;font-size:16px;font-weight:700}
+.chip{display:inline-block;border-radius:999px;padding:4px 12px;font-size:15px;font-weight:700;background:#e4f0b4;color:#2b4a22;border:2px solid #7c8b6c;margin-right:6px}
+.chip.d{background:#fdffbe;border-color:#fdffbe}
+table.tb{border-collapse:collapse;width:100%;font-size:17px;text-align:center}
+.tb th{background:#cde985;padding:6px;border:2px solid #fff}.tb td{padding:7px 4px;border:2px solid #fff;background:#e9f4c3;font-weight:700}
+.tb td:first-child{background:#54754a;color:#fff;text-align:left;padding-left:8px}
+.tb tr.k td{outline:3px solid #d9822b;outline-offset:-3px}
+.path{position:absolute;color:#d9822b;font:800 30px/1 "DejaVu Sans"}
+.side{position:absolute;left:948px;top:24px;width:590px}
+.side h2{font-size:26px;color:#2f5424;margin:0 0 10px}
+.it{position:relative;border-left:5px solid #d9822b;padding:6px 0 8px 18px;margin-bottom:12px}
+.it .b{position:absolute;left:-22px;top:4px;width:38px;height:38px;border-radius:50%;background:#d9822b;color:#fff;font:800 21px/38px "DejaVu Sans";text-align:center}
+.it h4{font-size:19px;margin:0 0 4px 22px;color:#1d2a14}
+.it p{font-size:15.5px;line-height:1.38;color:#33442a;margin-left:22px}
+.it p b{color:#1d2a14}
+.leg{display:flex;flex-direction:column;gap:6px;font-size:15.5px;margin-bottom:16px}
+.typo{border-collapse:collapse;width:100%;font-size:15px;margin-bottom:14px}.typo td,.typo th{border:1px solid #c9d6ad;padding:4px 7px;text-align:left}.typo th{background:#cde985}
+</style></head><body><div id="w">
+
+<div class="pan">
+ <div class="bar">5 Hasil <small>panel paling besar di poster (± 40% luas)</small></div>
+
+ <!-- 1 banner -->
+ <div class="z" style="top:136px;height:178px;background:linear-gradient(90deg,#2f5424,#4a7c36);border-color:#2f5424;color:#fff">
+  <div class="n">1</div>
+  <div style="position:absolute;left:24px;top:20px;width:390px;font:800 25px/1.25 'DejaVu Sans'">SVM + tiga biomarka membedakan <span style="background:linear-gradient(transparent 55%,#d9822b 55%)">tiga kelas risiko</span></div>
+  <div style="position:absolute;left:24px;top:124px"><span class="chip d">DATA SIMULASI</span><span class="chip">13 sesi · 292 jendela</span><span class="chip">k = 0,44</span></div>
+  <div style="position:absolute;right:26px;top:22px;display:flex;gap:26px;text-align:center"><div><div class="big" style="color:#ffe08a">±92%</div><div style="font-size:18px;font-weight:700">akurasi</div></div><div><div class="big">0,92</div><div style="font-size:18px;font-weight:700">macro F1</div></div></div>
+ </div>
+
+ <!-- 2 pola tegangan / atau plot SVR -->
+ <div class="z" style="top:334px;height:300px"><div class="n">2</div>
+  <div class="zt"><span class="lt">a</span>Tiga kelas terpisah pada tegangan</div>
+  <div class="ph" style="height:170px">Grafik pola tegangan pH · fruktosamin · glukosa (3 panel, warna per kelas)<br><i>atau plot kesesuaian SVR (R² ≥ 0,997)</i></div>
+  <p class="t" style="margin-top:10px">Ketiga kanal membentuk <span class="hl">tiga tingkat terpisah</span>: Normal, Prediabetes, Diabetes.</p>
+ </div>
+
+ <!-- 3 akurasi -->
+ <div class="z" style="top:654px;height:440px;border-color:#d9822b;border-width:4px"><div class="n">3</div>
+  <div class="zt"><span class="lt">b</span>Akurasi klasifikasi SVM <span class="warn" style="margin-left:auto">INTI HASIL</span></div>
+  <div style="display:flex;gap:16px">
+   <div class="ph" style="width:330px;height:340px;flex:none">Confusion matrix<br>(diagonal gelap, persentase per baris)</div>
+   <div style="flex:1">
+    <table class="tb"><tr><th>Kelas</th><th>Presisi</th><th>Recall</th><th>F1</th></tr>
+     <tr><td>Normal</td><td>90%</td><td>90%</td><td>90%</td></tr>
+     <tr class="k"><td>Prediabetes</td><td>89%</td><td>86%</td><td>87%</td></tr>
+     <tr><td>Diabetes</td><td>98%</td><td>99%</td><td>99%</td></tr>
+     <tr class="k"><td>Macro</td><td>93%</td><td>92%</td><td>92%</td></tr></table>
+    <p class="t" style="margin-top:12px">Salah tebak hanya pada <span class="hl">kelas bersebelahan</span>; <span class="hl">Prediabetes</span> paling sulit.</p>
+   </div>
+  </div>
+ </div>
+
+ <!-- 4 dan 5 -->
+ <div class="z" style="top:1114px;height:350px;right:auto;width:410px"><div class="n">4</div>
+  <div class="zt" style="font-size:23px"><span class="lt">c</span>Mengapa 3 biomarka?</div>
+  <div class="ph" style="height:180px">Grafik F1 vs variasi antar-orang (k)<br>garis tebal = 3 kanal</div>
+  <p class="t" style="margin-top:10px;font-size:17.5px"><span class="hl">3 kanal &gt; 1 kanal</span>: F1 <span class="hl">+0,20</span> dibanding pH saja.</p>
+ </div>
+ <div class="z" style="top:1114px;height:350px;left:462px"><div class="n">5</div>
+  <div class="zt" style="font-size:23px"><span class="lt">d</span>Sampai ke pengguna</div>
+  <div class="ph" style="height:180px">Screenshot dashboard (tren glukosa)<br>tanpa nama/ID subjek</div>
+  <p class="t" style="margin-top:10px;font-size:17.5px">Hasil tampil di <span class="hl">dashboard</span> sebagai tren harian. <span class="warn" style="font-size:13px">TAMPILAN DEMO</span></p>
+ </div>
+
+ <!-- 6 catatan -->
+ <div class="z" style="top:1484px;height:68px;background:#fff4e2;border-color:#b5651d;padding:10px 20px 10px 40px"><div class="n">6</div>
+  <p class="t" style="font-size:17px;color:#7a4410"><i>Rerata 100 pengulangan · skenario k = 0,44 · <b>belum diuji pada subjek nyata</b></i></p>
+ </div>
+ <div class="path" style="left:836px;top:302px">↓</div><div class="path" style="left:836px;top:622px">↓</div><div class="path" style="left:836px;top:1082px">↓</div><div class="path" style="left:432px;top:1270px">→</div>
+</div>
+
+<div class="side">
+ <h2>Urutan baca dan isi tiap blok</h2>
+ <div class="it"><div class="b">1</div><h4>Banner pesan utama (paling atas, latar gelap)</h4><p>Isi: 1 kalimat temuan + 2 angka besar + label DATA SIMULASI. <b>Highlight:</b> "tiga kelas risiko", <b>±92%</b>, <b>0,92</b>. Alasan: kriteria desain "pesan jadi pusat perhatian". ≤ 12 kata.</p></div>
+ <div class="it"><div class="b">2</div><h4>a. Bukti dasar: kelas memang terpisah</h4><p>Isi: grafik pola tegangan tiga kelas (atau plot kesesuaian SVR). <b>Highlight:</b> "tiga tingkat terpisah". Lebar penuh karena grafiknya memanjang. ≤ 15 kata.</p></div>
+ <div class="it"><div class="b">3</div><h4>b. Inti hasil: akurasi SVM (blok terbesar)</h4><p>Isi: confusion matrix kiri, tabel kanan. Bingkai oranye baris <b>Macro</b> dan <b>Prediabetes</b> saja. <b>Highlight:</b> "kelas bersebelahan", "Prediabetes". Ukuran terbesar karena paling sering ditanya juri. ≤ 15 kata.</p></div>
+ <div class="it"><div class="b">4</div><h4>c. Nilai tambah: alasan tiga biomarka</h4><p>Isi: grafik F1 vs k. <b>Highlight:</b> "3 kanal &gt; 1 kanal", "+0,20". Menjawab "kenapa tidak satu sensor saja?" (kreativitas, bobot 25). ≤ 12 kata.</p></div>
+ <div class="it"><div class="b">5</div><h4>d. Produk: hasil sampai ke pengguna</h4><p>Isi: screenshot dashboard. <b>Highlight:</b> "dashboard" + label TAMPILAN DEMO. Pola poster pemenang PKM-KC: hasil = tampilan produk. ≤ 10 kata.</p></div>
+ <div class="it"><div class="b">6</div><h4>Catatan kejujuran (paling bawah)</h4><p>Isi: rerata 100 pengulangan, k = 0,44, belum diuji pada subjek nyata. Huruf kecil miring, tetapi <b>jangan dihilangkan</b>. ≤ 12 kata.</p></div>
+ <h2 style="margin-top:6px">Gaya highlight (pakai maksimal 2 per blok)</h2>
+ <div class="leg"><div><span class="big" style="font-size:30px;color:#2f5424">±92%</span> &nbsp;angka utama: huruf terbesar, warna aksen</div><div><span class="hl">kata kunci</span> &nbsp;tebal + stabilo kuning</div><div><span style="outline:3px solid #d9822b;padding:1px 6px">baris tabel</span> &nbsp;bingkai oranye, bukan warna penuh</div><div><span class="warn">CATATAN</span> &nbsp;kotak oranye tipis untuk label jujur</div></div>
+ <h2>Ukuran huruf (poster 80 × 60 cm, dibaca dari 2 m)</h2>
+ <table class="typo"><tr><th>Elemen</th><th>Ukuran</th></tr><tr><td>Judul panel "Hasil"</td><td>72–90 pt</td></tr><tr><td>Angka besar ±92% / 0,92</td><td>100–130 pt</td></tr><tr><td>Judul blok a–d</td><td>40–48 pt</td></tr><tr><td>Kalimat isi</td><td>24–28 pt</td></tr><tr><td>Label grafik dan tabel</td><td>≥ 20 pt</td></tr><tr><td>Catatan kecil</td><td>18–20 pt</td></tr></table>
+ <p style="font-size:15px;color:#555">Total isi panel Hasil ± 75 kata. Jalur mata: atas ke bawah, lalu kiri ke kanan di baris terakhir (tanda panah oranye).</p>
+</div>
+</div></body></html>

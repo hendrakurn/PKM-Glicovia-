@@ -1,0 +1,53 @@
+<!doctype html><html lang="id"><head><meta charset="utf-8"><link rel="stylesheet" href="style.css"><title>Panel Hasil v2</title>
+<style>
+.ttl2{position:absolute;left:30px;top:14px;font:800 40px/1 "DejaVu Sans";color:#fff;-webkit-text-stroke:3px #3a612c;paint-order:stroke fill}
+.lt{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;border-radius:50%;background:#3a612c;color:#fff;font:800 26px/1 "DejaVu Sans";margin-right:12px;-webkit-text-stroke:0}
+.cap2{position:absolute;font-size:18px;line-height:1.3;color:#3d4d2c}
+.big{font:800 62px/1 "DejaVu Sans";color:#1f4a16}
+</style></head>
+<body><div class="panel" id="p" style="width:1100px;height:1452px">
+ <div class="bar"><div class="tab">5</div><h1>Hasil</h1></div>
+
+ <!-- Pesan utama -->
+ <div class="card" style="top:200px;height:150px;background:linear-gradient(90deg,#2f5424,#4a7c36);border-color:#2f5424">
+  <div style="position:absolute;left:34px;top:18px;width:540px;color:#fff;font:800 28px/1.22 'DejaVu Sans'">SVM dan tiga biomarka membedakan tiga kelas risiko</div>
+  <div style="position:absolute;left:34px;top:112px;display:flex;gap:10px"><span class="chip" style="background:#fdffbe;color:#2b4a22">DATA SIMULASI</span><span class="chip l">13 sesi · 292 jendela</span><span class="chip l">k = 0,44</span></div>
+  <div style="position:absolute;right:34px;top:14px;display:flex;gap:30px;color:#fff;text-align:center">
+   <div><div style="font:800 62px/1 'DejaVu Sans'">±92%</div><div style="font-size:19px;font-weight:700">akurasi</div></div>
+   <div><div style="font:800 62px/1 'DejaVu Sans'">0,92</div><div style="font-size:19px;font-weight:700">macro F1</div></div>
+  </div>
+ </div>
+
+ <!-- a. Pola tegangan -->
+ <div class="card" style="top:368px;height:340px">
+  <div class="ttl2"><span class="lt">a</span>Tiga kelas terpisah pada tegangan</div>
+  <div class="fig" style="position:absolute;left:30px;right:30px;top:72px;height:206px"><img src="assets/volt.png"></div>
+  <p class="cap2" style="left:30px;right:30px;top:288px">Tegangan pH, fruktosamin, dan glukosa membentuk tiga tingkat berurutan: Normal, Prediabetes, Diabetes.</p>
+ </div>
+
+ <!-- b. Akurasi -->
+ <div class="card" style="top:726px;height:350px">
+  <div class="ttl2"><span class="lt">b</span>Akurasi klasifikasi SVM</div>
+  <div class="fig" style="position:absolute;left:30px;top:72px;width:330px;height:250px"><img src="assets/cm.png"></div>
+  <div style="position:absolute;left:380px;width:532px;top:76px">
+   <table class="t"><tr><th>Kelas</th><th>Presisi</th><th>Recall</th><th>F1</th></tr>
+    <tr><td>Normal</td><td>90%</td><td>90%</td><td>90%</td></tr>
+    <tr><td>Prediabetes</td><td>89%</td><td>86%</td><td>87%</td></tr>
+    <tr><td>Diabetes</td><td>98%</td><td>99%</td><td>99%</td></tr>
+    <tr><td>Macro</td><td>93%</td><td>92%</td><td>92%</td></tr></table>
+   <p class="cap2" style="position:static;margin-top:12px">Salah tebak hanya pada kelas bersebelahan.</p>
+  </div>
+ </div>
+
+ <!-- c dan d -->
+ <div class="card" style="top:1094px;height:340px;left:76px;right:auto;width:462px">
+  <div class="ttl2" style="font-size:32px"><span class="lt" style="width:38px;height:38px;font-size:22px">c</span>3 kanal &gt; 1 kanal</div>
+  <div class="fig" style="position:absolute;left:24px;right:24px;top:66px;height:200px"><img src="assets/f1_vs_k.png"></div>
+  <p class="cap2" style="left:24px;right:24px;top:274px;font-size:17px">Makin beragam orangnya (k naik), gabungan tiga kanal paling tahan.</p>
+ </div>
+ <div class="card" style="top:1094px;height:340px;left:562px;right:76px">
+  <div class="ttl2" style="font-size:32px"><span class="lt" style="width:38px;height:38px;font-size:22px">d</span>Di dashboard</div>
+  <div class="fig" style="position:absolute;left:24px;right:24px;top:66px;height:200px;background:#fdfbe6"><img src="assets/dashboard_tren.png"></div>
+  <p class="cap2" style="left:24px;right:24px;top:274px;font-size:17px">Tampilan demo, tren prediksi per hari. Kalibrasi sementara.</p>
+ </div>
+</div></body></html>

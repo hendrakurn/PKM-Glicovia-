@@ -1,0 +1,51 @@
+<!doctype html><html lang="id"><head><meta charset="utf-8"><title>Wireframe poster</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0} body{font-family:"DejaVu Sans",Arial,sans-serif;background:#fff;color:#1d2a14}
+#w{position:relative;width:1500px;height:1600px;background:#f4efaf}
+.z{position:absolute;border:3px solid #3a612c;border-radius:18px;background:#fdffd0;padding:14px 18px;overflow:hidden}
+.z h3{font-size:25px;display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.n{display:inline-flex;width:38px;height:38px;border-radius:50%;background:#3a612c;color:#fff;align-items:center;justify-content:center;font-weight:800;font-size:22px;flex:none}
+.z p,.z li{font-size:17.5px;line-height:1.35;color:#33442a} .z ul{padding-left:20px}
+.w{position:absolute;right:12px;bottom:10px;background:#3a612c;color:#fff;border-radius:999px;font-size:15px;font-weight:700;padding:3px 12px}
+.hero{background:linear-gradient(135deg,#2f5424,#4a7c36);color:#fff;border-color:#2f5424}.hero p,.hero li{color:#e9f3c9}
+.key{border-color:#d9822b;border-width:5px;background:#fff7d6}
+.ph{border:2px dashed #7c8b6c;border-radius:12px;background:#e9f5c7;display:flex;align-items:center;justify-content:center;color:#4a5a38;font-size:16px;text-align:center;padding:6px}
+.arrow{position:absolute;font-size:46px;color:#d9822b;font-weight:800}
+.side{position:absolute;left:1000px;top:0;width:500px;height:1600px;background:#fff;border-left:4px solid #3a612c;padding:26px 28px}
+.side h2{font-size:27px;margin-bottom:14px;color:#2f5424} .side li{font-size:18px;line-height:1.38;margin:0 0 9px 20px;color:#2b3a22} .side .tag{display:inline-block;background:#d9822b;color:#fff;border-radius:999px;font-size:14px;font-weight:700;padding:2px 10px;margin-right:6px}
+.side table{border-collapse:collapse;width:100%;font-size:16.5px;margin:6px 0 18px} .side td,.side th{border:1px solid #b9c99c;padding:6px 8px;text-align:left} .side th{background:#cde985}
+.dim{position:absolute;font-size:15px;color:#555;font-weight:700}
+</style></head><body><div id="w">
+ <!-- Poster 60 x 80 cm: area poster 1000 x 1333 (skala 16,67 px/cm) -->
+ <div style="position:absolute;left:0;top:0;width:1000px;height:1333px;border-right:4px solid #3a612c">
+  <!-- Header -->
+  <div class="z hero" style="left:20px;top:20px;width:960px;height:190px"><h3 style="font-size:30px">Judul sama dengan proposal (maks. 2 baris)</h3><p>Nama tim · logo Perguruan Tinggi · logo Kemdiktisaintek/PIMNAS · label PKM-KC · pembimbing</p><span class="w">teks besar, terbaca dari 2 m</span></div>
+  <!-- Kolom 1 -->
+  <div class="z" style="left:20px;top:226px;width:310px;height:235px"><h3><span class="n">1</span>Latar Belakang</h3><ul><li>3 fakta angka (diabetes global, Indonesia, belum terdiagnosis)</li><li>1 celah masalah</li></ul><span class="w">≤ 40 kata</span></div>
+  <div class="z" style="left:20px;top:476px;width:310px;height:160px"><h3><span class="n">2</span>Tujuan</h3><ul><li>3 poin dengan tanda centang</li></ul><span class="w">≤ 25 kata</span></div>
+  <div class="z" style="left:20px;top:651px;width:310px;height:662px"><h3><span class="n">3</span>Metode</h3><div class="ph" style="height:130px;margin-bottom:10px">Alur 5 langkah (ikon + panah)</div><div class="ph" style="height:210px;margin-bottom:10px">Arsitektur model: SVR dan SVM paralel (Gambar 9)</div><ul><li>Data simulasi: 13 sesi, 292 jendela</li><li>Validasi leave-one-session-out</li></ul><span class="w">≤ 50 kata</span></div>
+  <!-- Kolom 2 -->
+  <div class="z" style="left:345px;top:226px;width:310px;height:620px"><h3><span class="n">4</span>Inovasi Produk</h3><div class="ph" style="height:360px;margin-bottom:10px">FOTO PROTOTIPE besar<br>(gambar utama poster)<br>+ callout sensor, ESP32, OLED</div><ul><li>3 keunggulan + spesifikasi 122×62×22 mm, 300 g</li></ul><span class="w">QR video prototipe</span></div>
+  <div class="z" style="left:345px;top:861px;width:310px;height:452px"><h3><span class="n">+</span>Cara Kerja</h3><div class="ph" style="height:290px;margin-bottom:10px">Alur penggunaan 7 langkah<br>(Gambar 13)</div><ul><li>Saliva 1 mL → sensor → SVM → dashboard</li></ul><span class="w">≤ 30 kata</span></div>
+  <!-- Kolom 3: Hasil -->
+  <div class="z key" style="left:670px;top:226px;width:310px;height:760px;padding:10px 12px"><h3 style="font-size:27px"><span class="n" style="background:#d9822b">5</span>HASIL</h3>
+   <div style="background:#2f5424;color:#fff;border-radius:10px;padding:8px 10px;font-size:16px;margin-bottom:7px"><b>Pesan utama + ±92% · 0,92</b><br>label DATA SIMULASI</div>
+   <div class="ph" style="height:110px;margin-bottom:6px">a. Pola tegangan 3 kelas</div>
+   <div class="ph" style="height:200px;margin-bottom:6px">b. Confusion matrix + tabel F1</div>
+   <div style="display:flex;gap:6px"><div class="ph" style="height:130px;flex:1">c. 3 kanal &gt; 1 kanal</div><div class="ph" style="height:130px;flex:1">d. Dashboard</div></div><span class="w" style="background:#d9822b">pusat perhatian</span></div>
+  <div class="z" style="left:670px;top:1001px;width:310px;height:312px"><h3><span class="n">6</span>Kesimpulan &amp; Saran</h3><ul><li>2 kalimat kesimpulan (akurasi ±92% pada simulasi)</li><li>Saran: uji subjek nyata, perbaiki kanal pH dan glukosa</li></ul><span class="w">≤ 40 kata</span></div>
+  <!-- Footer -->
+  <div class="z" style="left:20px;top:1328px;width:960px;height:0;border:none;padding:0"></div>
+ </div>
+ <div class="z" style="left:20px;top:1349px;width:960px;height:231px;background:#e4efc2"><h3 style="font-size:21px">Footer (huruf kecil tapi terbaca)</h3><p>Pustaka (Harvard) · Ucapan terima kasih · Kontak · Waktu kegiatan · logo mitra/pendana · <b>Pernyataan penggunaan AI (wajib)</b> · QR (video prototipe, artikel)</p></div>
+ <div class="arrow" style="left:340px;top:190px;font-size:34px">①</div>
+ <!-- Sisi kanan: catatan -->
+ <div class="side"><h2>Aturan PIMNAS ke-39 (2026)</h2>
+  <ul><li>Satu lembar <b>80 × 60 cm</b>, vertikal (portrait), terbaca dari <b>2 m</b></li><li>Wajib: judul (= judul proposal), nama + logo PT, latar belakang, tujuan, metode, <b>hasil (teks, gambar, skema)</b>, kesimpulan, referensi (<b>Harvard</b>), mitra (+logo), kontak, waktu kegiatan</li><li>PKM-KC: gambar produk sangat mendukung; setiap gambar cantumkan sumber; resolusi ≥ 300 dpi</li><li><span class="tag">WAJIB</span>Pernyataan penggunaan AI di bagian bawah poster, sekalipun tidak memakai AI</li></ul>
+  <h2>Skor penilaian poster</h2>
+  <table><tr><th>Kriteria</th><th>Bobot</th></tr><tr><td>Substansi: kreativitas, inovasi</td><td>25</td></tr><tr><td>Substansi: kemanfaatan</td><td>25</td></tr><tr><td>Isi teks: singkat, padat, terbaca</td><td>15</td></tr><tr><td>Informasi jelas, dipahami utuh</td><td>15</td></tr><tr><td>Desain: pesan jadi pusat perhatian</td><td>10</td></tr><tr><td>Gambar: bermakna, lengkap, orisinil</td><td>10</td></tr></table>
+  <h2>Pola poster pemenang PKM-KC</h2>
+  <ul><li>Judul besar dengan foto produk di header, label PKM-KC</li><li>Bagian bernomor dengan judul berbentuk pil; alur membaca zig-zag</li><li><b>Hasil = tampilan produk + grafik sebelum/sesudah</b>, sub-bagian a, b, c, d</li><li>QR ke video kerja atau buku manual; ikon untuk keunggulan</li></ul>
+  <h2>Anggaran teks</h2><ul><li>Total ≤ 250 kata (pedoman lama), rata kiri, spasi 1,2, ≤ 2 jenis huruf, kolom ≤ 11 kata per baris</li><li>Hindari huruf kapital semua pada isi</li></ul>
+ </div>
+</div></body></html>
