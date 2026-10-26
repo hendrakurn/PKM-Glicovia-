@@ -1,0 +1,32 @@
+{
+  "original_n_samples": 150,
+  "missing_values_before": {
+    "glucose_saliva": 0,
+    "ph_value": 0,
+    "viscosity_cP": 0
+  },
+  "imputation_strategy": "median",
+  "outliers_detected": {
+    "glucose_saliva": 16,
+    "ph_value": 5,
+    "viscosity_cP": 7
+  },
+  "outlier_strategy": "remove",
+  "final_train_samples": 97,
+  "final_test_samples": 25,
+  "stratification_ratios": {
+    "0": [
+      0.47,
+      0.48
+    ],
+    "1": [
+      0.42,
+      0.44
+    ],
+    "2": [
+      0.1,
+      0.08
+    ]
+  },
+  "timestamp": "2026-07-01T11:42:43Z"
+}

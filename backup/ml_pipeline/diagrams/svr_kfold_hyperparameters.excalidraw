@@ -1,0 +1,425 @@
+{
+  "type": "excalidraw",
+  "version": 2,
+  "source": "codex",
+  "elements": [
+    {
+      "type": "text",
+      "id": "title",
+      "x": 420,
+      "y": 20,
+      "text": "SVR Grid Search: 5-Fold, 48 Kombinasi, dan Arti C / gamma / epsilon",
+      "fontSize": 28,
+      "fontFamily": 1,
+      "strokeColor": "#1e1e1e",
+      "originalText": "SVR Grid Search: 5-Fold, 48 Kombinasi, dan Arti C / gamma / epsilon",
+      "autoResize": true
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "x": 500,
+      "y": 58,
+      "text": "Ringkasan training SVR pada project ml_pipeline",
+      "fontSize": 18,
+      "fontFamily": 1,
+      "strokeColor": "#6b7280",
+      "originalText": "Ringkasan training SVR pada project ml_pipeline",
+      "autoResize": true
+    },
+    {
+      "type": "rectangle",
+      "id": "bg_a",
+      "x": 30,
+      "y": 100,
+      "width": 1720,
+      "height": 280,
+      "backgroundColor": "#fff4e6",
+      "fillStyle": "solid",
+      "strokeColor": "#f59f00",
+      "strokeWidth": 1,
+      "opacity": 18,
+      "roundness": {
+        "type": 3
+      }
+    },
+    {
+      "type": "text",
+      "id": "a_label",
+      "x": 50,
+      "y": 112,
+      "text": "A. Perhitungan kombinasi hyperparameter",
+      "fontSize": 22,
+      "fontFamily": 1,
+      "strokeColor": "#9a3412",
+      "originalText": "A. Perhitungan kombinasi hyperparameter",
+      "autoResize": true
+    },
+    {
+      "type": "rectangle",
+      "id": "c_box",
+      "x": 80,
+      "y": 170,
+      "width": 280,
+      "height": 150,
+      "roundness": {
+        "type": 3
+      },
+      "backgroundColor": "#ffd8a8",
+      "fillStyle": "solid",
+      "strokeColor": "#f59f00",
+      "strokeWidth": 2
+    },
+    {
+      "type": "text",
+      "id": "c_text",
+      "x": 102,
+      "y": 205,
+      "text": "C\n[0.1, 1, 10, 100]\n4 pilihan",
+      "fontSize": 24,
+      "fontFamily": 1,
+      "strokeColor": "#1e1e1e",
+      "textAlign": "center",
+      "originalText": "C\n[0.1, 1, 10, 100]\n4 pilihan",
+      "autoResize": true
+    },
+    {
+      "type": "rectangle",
+      "id": "gamma_box",
+      "x": 430,
+      "y": 170,
+      "width": 320,
+      "height": 150,
+      "roundness": {
+        "type": 3
+      },
+      "backgroundColor": "#d0bfff",
+      "fillStyle": "solid",
+      "strokeColor": "#845ef7",
+      "strokeWidth": 2
+    },
+    {
+      "type": "text",
+      "id": "gamma_text",
+      "x": 455,
+      "y": 205,
+      "text": "gamma\n[0.01, 0.1, 0.5, 1.0]\n4 pilihan",
+      "fontSize": 24,
+      "fontFamily": 1,
+      "strokeColor": "#1e1e1e",
+      "textAlign": "center",
+      "originalText": "gamma\n[0.01, 0.1, 0.5, 1.0]\n4 pilihan",
+      "autoResize": true
+    },
+    {
+      "type": "rectangle",
+      "id": "eps_box",
+      "x": 830,
+      "y": 170,
+      "width": 300,
+      "height": 150,
+      "roundness": {
+        "type": 3
+      },
+      "backgroundColor": "#c3fae8",
+      "fillStyle": "solid",
+      "strokeColor": "#0f9d58",
+      "strokeWidth": 2
+    },
+    {
+      "type": "text",
+      "id": "eps_text",
+      "x": 870,
+      "y": 205,
+      "text": "epsilon\n[0.1, 0.2, 0.5]\n3 pilihan",
+      "fontSize": 24,
+      "fontFamily": 1,
+      "strokeColor": "#1e1e1e",
+      "textAlign": "center",
+      "originalText": "epsilon\n[0.1, 0.2, 0.5]\n3 pilihan",
+      "autoResize": true
+    },
+    {
+      "type": "rectangle",
+      "id": "calc_box",
+      "x": 1210,
+      "y": 155,
+      "width": 470,
+      "height": 175,
+      "roundness": {
+        "type": 3
+      },
+      "backgroundColor": "#a5d8ff",
+      "fillStyle": "solid",
+      "strokeColor": "#4a9eed",
+      "strokeWidth": 2
+    },
+    {
+      "type": "text",
+      "id": "calc_text",
+      "x": 1240,
+      "y": 187,
+      "text": "Semua kombinasi dicoba\n\n4 nilai C x 4 nilai gamma x 3 nilai epsilon\n= 48 kombinasi\n\nContoh 1 kombinasi:\nC=100, gamma=0.1, epsilon=0.1",
+      "fontSize": 24,
+      "fontFamily": 1,
+      "strokeColor": "#1e1e1e",
+      "originalText": "Semua kombinasi dicoba\n\n4 nilai C x 4 nilai gamma x 3 nilai epsilon\n= 48 kombinasi\n\nContoh 1 kombinasi:\nC=100, gamma=0.1, epsilon=0.1",
+      "autoResize": true
+    },
+    {
+      "type": "text",
+      "id": "a_footer",
+      "x": 80,
+      "y": 338,
+      "text": "Intinya: setiap kombinasi adalah satu set nilai (C, gamma, epsilon). GridSearchCV mencoba semua kemungkinan agar bisa membandingkan performanya secara adil.",
+      "fontSize": 18,
+      "fontFamily": 1,
+      "strokeColor": "#7c2d12",
+      "originalText": "Intinya: setiap kombinasi adalah satu set nilai (C, gamma, epsilon). GridSearchCV mencoba semua kemungkinan agar bisa membandingkan performanya secara adil.",
+      "autoResize": true
+    },
+    {
+      "type": "rectangle",
+      "id": "bg_b",
+      "x": 30,
+      "y": 410,
+      "width": 1720,
+      "height": 420,
+      "backgroundColor": "#e7f5ff",
+      "fillStyle": "solid",
+      "strokeColor": "#4a9eed",
+      "strokeWidth": 1,
+      "opacity": 18,
+      "roundness": {
+        "type": 3
+      }
+    },
+    {
+      "type": "text",
+      "id": "b_label",
+      "x": 50,
+      "y": 422,
+      "text": "B. Untuk 1 kombinasi, bagaimana 5-fold dihitung",
+      "fontSize": 22,
+      "fontFamily": 1,
+      "strokeColor": "#1d4ed8",
+      "originalText": "B. Untuk 1 kombinasi, bagaimana 5-fold dihitung",
+      "autoResize": true
+    },
+    {
+      "type": "rectangle",
+      "id": "combo_box",
+      "x": 80,
+      "y": 485,
+      "width": 340,
+      "height": 110,
+      "roundness": {
+        "type": 3
+      },
+      "backgroundColor": "#ffd8a8",
+      "fillStyle": "solid",
+      "strokeColor": "#f59f00",
+      "strokeWidth": 2
+    },
+    {
+      "type": "text",
+      "id": "combo_text",
+      "x": 115,
+      "y": 518,
+      "text": "Ambil 1 kombinasi dulu\nmisal: C=100, gamma=0.1, epsilon=0.1",
+      "fontSize": 22,
+      "fontFamily": 1,
+      "strokeColor": "#1e1e1e",
+      "textAlign": "center",
+      "originalText": "Ambil 1 kombinasi dulu\nmisal: C=100, gamma=0.1, epsilon=0.1",
+      "autoResize": true
+    },
+    {
+      "type": "rectangle",
+      "id": "fold_box",
+      "x": 490,
+      "y": 470,
+      "width": 1210,
+      "height": 150,
+      "roundness": {
+        "type": 3
+      },
+      "backgroundColor": "#d0ebff",
+      "fillStyle": "solid",
+      "strokeColor": "#4a9eed",
+      "strokeWidth": 2
+    },
+    {
+      "type": "text",
+      "id": "fold_text",
+      "x": 525,
+      "y": 502,
+      "text": "Data train dibagi 5 fold\n\nRun 1: validasi fold 1, train fold 2+3+4+5 -> dapat R2_1\nRun 2: validasi fold 2, train fold 1+3+4+5 -> dapat R2_2\nRun 3: validasi fold 3, train fold 1+2+4+5 -> dapat R2_3\nRun 4: validasi fold 4, train fold 1+2+3+5 -> dapat R2_4\nRun 5: validasi fold 5, train fold 1+2+3+4 -> dapat R2_5",
+      "fontSize": 21,
+      "fontFamily": 1,
+      "strokeColor": "#1e1e1e",
+      "originalText": "Data train dibagi 5 fold\n\nRun 1: validasi fold 1, train fold 2+3+4+5 -> dapat R2_1\nRun 2: validasi fold 2, train fold 1+3+4+5 -> dapat R2_2\nRun 3: validasi fold 3, train fold 1+2+4+5 -> dapat R2_3\nRun 4: validasi fold 4, train fold 1+2+3+5 -> dapat R2_4\nRun 5: validasi fold 5, train fold 1+2+3+4 -> dapat R2_5",
+      "autoResize": true
+    },
+    {
+      "type": "rectangle",
+      "id": "mean_box",
+      "x": 80,
+      "y": 655,
+      "width": 1620,
+      "height": 130,
+      "roundness": {
+        "type": 3
+      },
+      "backgroundColor": "#c3fae8",
+      "fillStyle": "solid",
+      "strokeColor": "#0f9d58",
+      "strokeWidth": 2
+    },
+    {
+      "type": "text",
+      "id": "mean_text",
+      "x": 115,
+      "y": 688,
+      "text": "Lalu hitung mean R2 untuk kombinasi ini:\nmean R2 = (R2_1 + R2_2 + R2_3 + R2_4 + R2_5) / 5\n\nJadi: 1 kombinasi -> 5 skor fold -> 1 mean R2",
+      "fontSize": 24,
+      "fontFamily": 1,
+      "strokeColor": "#1e1e1e",
+      "originalText": "Lalu hitung mean R2 untuk kombinasi ini:\nmean R2 = (R2_1 + R2_2 + R2_3 + R2_4 + R2_5) / 5\n\nJadi: 1 kombinasi -> 5 skor fold -> 1 mean R2",
+      "autoResize": true
+    },
+    {
+      "type": "text",
+      "id": "b_footer",
+      "x": 80,
+      "y": 795,
+      "text": "Karena ada 48 kombinasi, total skor fold mentah = 48 x 5 = 240. Tetapi hasil ranking akhir tetap 48 mean R2, satu mean untuk satu kombinasi.",
+      "fontSize": 18,
+      "fontFamily": 1,
+      "strokeColor": "#1d4ed8",
+      "originalText": "Karena ada 48 kombinasi, total skor fold mentah = 48 x 5 = 240. Tetapi hasil ranking akhir tetap 48 mean R2, satu mean untuk satu kombinasi.",
+      "autoResize": true
+    },
+    {
+      "type": "rectangle",
+      "id": "bg_c",
+      "x": 30,
+      "y": 860,
+      "width": 1720,
+      "height": 500,
+      "backgroundColor": "#f3f0ff",
+      "fillStyle": "solid",
+      "strokeColor": "#845ef7",
+      "strokeWidth": 1,
+      "opacity": 18,
+      "roundness": {
+        "type": 3
+      }
+    },
+    {
+      "type": "text",
+      "id": "c_label",
+      "x": 50,
+      "y": 872,
+      "text": "C. Arti hyperparameter dengan analogi",
+      "fontSize": 22,
+      "fontFamily": 1,
+      "strokeColor": "#5b21b6",
+      "originalText": "C. Arti hyperparameter dengan analogi",
+      "autoResize": true
+    },
+    {
+      "type": "rectangle",
+      "id": "c_meaning_box",
+      "x": 80,
+      "y": 940,
+      "width": 500,
+      "height": 320,
+      "roundness": {
+        "type": 3
+      },
+      "backgroundColor": "#ffd8a8",
+      "fillStyle": "solid",
+      "strokeColor": "#f59f00",
+      "strokeWidth": 2
+    },
+    {
+      "type": "text",
+      "id": "c_meaning_text",
+      "x": 110,
+      "y": 976,
+      "text": "C = seberapa keras model menghukum error\n\nC kecil:\nmodel lebih santai, kurva lebih halus,\nrisko underfit lebih besar\n\nC besar:\nmodel lebih ketat mengejar data training,\nrisiko overfit lebih besar\n\nAnalogi:\nguru toleran vs guru sangat ketat",
+      "fontSize": 24,
+      "fontFamily": 1,
+      "strokeColor": "#1e1e1e",
+      "originalText": "C = seberapa keras model menghukum error\n\nC kecil:\nmodel lebih santai, kurva lebih halus,\nrisko underfit lebih besar\n\nC besar:\nmodel lebih ketat mengejar data training,\nrisiko overfit lebih besar\n\nAnalogi:\nguru toleran vs guru sangat ketat",
+      "autoResize": true
+    },
+    {
+      "type": "rectangle",
+      "id": "gamma_meaning_box",
+      "x": 630,
+      "y": 940,
+      "width": 500,
+      "height": 320,
+      "roundness": {
+        "type": 3
+      },
+      "backgroundColor": "#d0bfff",
+      "fillStyle": "solid",
+      "strokeColor": "#845ef7",
+      "strokeWidth": 2
+    },
+    {
+      "type": "text",
+      "id": "gamma_meaning_text",
+      "x": 662,
+      "y": 976,
+      "text": "gamma = seberapa lokal pengaruh tiap titik\npada kernel RBF\n\ngamma kecil:\npengaruh titik menyebar luas,\nmodel lebih smooth\n\ngamma besar:\npengaruh titik sangat dekat / lokal,\nmodel lebih tajam dan sensitif\n\nAnalogi:\nlampu dengan cahaya luas vs cahaya sempit",
+      "fontSize": 24,
+      "fontFamily": 1,
+      "strokeColor": "#1e1e1e",
+      "originalText": "gamma = seberapa lokal pengaruh tiap titik\npada kernel RBF\n\ngamma kecil:\npengaruh titik menyebar luas,\nmodel lebih smooth\n\ngamma besar:\npengaruh titik sangat dekat / lokal,\nmodel lebih tajam dan sensitif\n\nAnalogi:\nlampu dengan cahaya luas vs cahaya sempit",
+      "autoResize": true
+    },
+    {
+      "type": "rectangle",
+      "id": "eps_meaning_box",
+      "x": 1180,
+      "y": 940,
+      "width": 520,
+      "height": 320,
+      "roundness": {
+        "type": 3
+      },
+      "backgroundColor": "#c3fae8",
+      "fillStyle": "solid",
+      "strokeColor": "#0f9d58",
+      "strokeWidth": 2
+    },
+    {
+      "type": "text",
+      "id": "eps_meaning_text",
+      "x": 1213,
+      "y": 976,
+      "text": "epsilon = zona toleransi error\n\nepsilon kecil:\nerror kecil tetap dianggap penting,\nmodel lebih sensitif\n\nepsilon besar:\nerror kecil diabaikan,\nmodel lebih santai\n\nAnalogi:\nlempar dart dengan target toleransi sempit\nvs target toleransi lebar",
+      "fontSize": 24,
+      "fontFamily": 1,
+      "strokeColor": "#1e1e1e",
+      "originalText": "epsilon = zona toleransi error\n\nepsilon kecil:\nerror kecil tetap dianggap penting,\nmodel lebih sensitif\n\nepsilon besar:\nerror kecil diabaikan,\nmodel lebih santai\n\nAnalogi:\nlempar dart dengan target toleransi sempit\nvs target toleransi lebar",
+      "autoResize": true
+    },
+    {
+      "type": "text",
+      "id": "final_note",
+      "x": 80,
+      "y": 1290,
+      "text": "Ringkas: C mengatur kekuatan hukuman error, gamma mengatur bentuk sensitivitas lokal RBF, epsilon mengatur error kecil yang masih dianggap wajar. Grid search mencari kombinasi tiga tombol ini yang memberi mean R2 terbaik pada 5-fold.",
+      "fontSize": 18,
+      "fontFamily": 1,
+      "strokeColor": "#4c1d95",
+      "originalText": "Ringkas: C mengatur kekuatan hukuman error, gamma mengatur bentuk sensitivitas lokal RBF, epsilon mengatur error kecil yang masih dianggap wajar. Grid search mencari kombinasi tiga tombol ini yang memberi mean R2 terbaik pada 5-fold.",
+      "autoResize": true
+    }
+  ]
+}

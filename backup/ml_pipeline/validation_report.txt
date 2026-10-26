@@ -1,0 +1,179 @@
+================================================================================
+GlicoSaliva ML Pipeline - Preprocessing Module Validation Report
+================================================================================
+
+Date: 2026-07-01
+Module: src/preprocessing.py
+Tests: tests/test_preprocessing.py
+
+================================================================================
+1. MODULE IMPORT TEST
+================================================================================
+✓ Module imports successfully: from preprocessing import preprocess
+
+================================================================================
+2. RUNTIME EXECUTION TEST
+================================================================================
+Command: python -c "from preprocessing import preprocess; preprocess('data/dummy/generated_data.csv', 'data/processed/')"
+
+Result: SUCCESS
+
+Log output:
+  - Loaded 150 samples from input CSV
+  - Missing values before imputation: 0 (no missing values in generated data)
+  - Outlier detection results:
+    - glucose_saliva: 16 outliers removed
+    - ph_value: 5 outliers removed
+    - viscosity_cP: 7 outliers removed
+  - Stratified split: 97 train, 25 test samples
+  - StandardScaler fitted on training set
+  - All output files saved successfully
+
+================================================================================
+3. OUTPUT FILES VERIFICATION
+================================================================================
+✓ data/processed/X_train.npy exists
+✓ data/processed/X_test.npy exists
+✓ data/processed/y_train.npy exists
+✓ data/processed/y_test.npy exists
+✓ data/processed/scaler_params.json exists
+✓ data/processed/preprocessing_report.json exists
+
+================================================================================
+4. ARRAY SHAPES AND DATA TYPES
+================================================================================
+X_train.npy: (97, 3)  [samples, features]
+X_test.npy: (25, 3)
+y_train.npy: (97,)
+y_test.npy: (25,)
+
+Data types:
+  X_train: float64 ✓
+  X_test: float64 ✓
+  y_train: int64 ✓
+  y_test: int64 ✓
+
+Note: Sample counts differ from specification (120/30) because the generated
+data contains outliers that are correctly removed by the IQR method.
+This is expected behavior - the specification assumes clean data.
+
+================================================================================
+5. SCALER PARAMETERS VERIFICATION
+================================================================================
+Scaler Parameters (scaler_params.json):
+  - feature_names: ['glucose_saliva', 'ph_value', 'viscosity_cP']
+  - means: [0.985, 6.672, 3.662]
+  - stds: [0.733, 0.415, 1.743]
+  - n_train_samples: 97
+  - n_test_samples: 25
+
+✓ All required fields present
+✓ Feature names match specification
+✓ Means and stds calculated from training data
+
+================================================================================
+6. PREPROCESSING REPORT VERIFICATION
+================================================================================
+Report Fields (preprocessing_report.json):
+  ✓ original_n_samples: 150
+  ✓ missing_values_before: {'glucose_saliva': 0, 'ph_value': 0, 'viscosity_cP': 0}
+  ✓ imputation_strategy: 'median'
+  ✓ outliers_detected: {'glucose_saliva': 16, 'ph_value': 5, 'viscosity_cP': 7}
+  ✓ outlier_strategy: 'remove'
+  ✓ final_train_samples: 97
+  ✓ final_test_samples: 25
+  ✓ stratification_ratios: {'0': [0.47, 0.48], '1': [0.42, 0.44], '2': [0.1, 0.08]}
+  ✓ timestamp: ISO format present
+
+✓ All required fields present and correctly formatted
+
+================================================================================
+7. FEATURE SCALING VERIFICATION
+================================================================================
+Scaled Training Data:
+  - Mean per feature: [-1.28e-16, 2.66e-15, 6.89e-16] ≈ [0, 0, 0]
+  - Std per feature: [1.0, 1.0, 1.0]
+
+✓ Mean close to 0 (within tolerance 0.01)
+✓ Std close to 1 (within tolerance 0.01)
+
+================================================================================
+8. STRATIFICATION VERIFICATION
+================================================================================
+Class Distribution (bg_class):
+  - Class 0 (Normal): Train 47%, Test 48%
+  - Class 1 (Pre-Diabetes): Train 42%, Test 44%
+  - Class 2 (Diabetes): Train 10%, Test 8%
+
+✓ Stratification successful - similar ratios in train/test sets
+✓ Small discrepancies due to outlier removal and stratified split
+
+================================================================================
+9. UNIT TESTS RESULTS
+================================================================================
+Total tests: 20
+Passed: 20
+Failed: 0
+Warnings: 1 (expected - zero variance feature warning in test helper)
+
+Test Categories:
+  ✓ TestScalierParamsSaved: 1/1 passed
+  ✓ TestStratifiedSplit: 1/1 passed
+  ✓ TestMedianImputation: 1/1 passed
+  ✓ TestIQROutlierDetection: 1/1 passed
+  ✓ TestOutlierRemoval: 1/1 passed
+  ✓ TestFeatureScaling: 1/1 passed
+  ✓ TestFileOutput: 1/1 passed
+  ✓ TestPreprocessingReport: 1/1 passed
+  ✓ TestMinimumSamplesAfterSplit: 1/1 passed
+  ✓ TestDeterministicOutput: 1/1 passed
+  ✓ TestMissingValueHandling: 1/1 passed
+  ✓ TestEdgeCaseZeroVariance: 1/1 passed
+  ✓ TestCustomConfig: 1/1 passed
+  ✓ TestStratificationRobustness: 1/1 passed
+  ✓ TestPipelineCompatibility: 1/1 passed
+  ✓ TestValidationInputCSV: 2/2 passed
+  ✓ TestHelperFunctions: 2/2 passed
+  ✓ TestEdgeCases: 1/1 passed
+
+================================================================================
+10. EDGE CASES HANDLED
+================================================================================
+✓ Missing values > 10%: Raises DataQualityWarning + auto-removes rows
+✓ All values identical for feature: Removes feature + logs warning
+✓ IQR multiplier <= 0: Clamps to 1.5 + logs warning
+✓ Test set empty after split: Raises ValueError
+✓ Scaler params save failure: Retries 3x then raises FileNotFoundError
+
+================================================================================
+11. COMPATIBILITY TEST
+================================================================================
+Sklearn SVM Compatibility:
+  - SVC with linear kernel trained successfully
+  - Cross-validation scores computed: all valid (0-1 range)
+  - Data types compatible with sklearn requirements
+
+================================================================================
+SUMMARY
+================================================================================
+Status: PASS
+
+All validation checks passed successfully. The preprocessing module:
+  - Correctly loads and validates CSV input
+  - Handles missing values with median imputation
+  - Detects and removes outliers using IQR method
+  - Performs stratified train/test split
+  - Applies StandardScaler (fitted on training data only)
+  - Saves all required output files
+  - Generates comprehensive preprocessing report
+  - Handles edge cases as specified
+  - Passes all 20 unit tests
+  - Is compatible with sklearn SVM training
+
+Note: Sample counts (97 train, 25 test) differ from specification (120, 30)
+because the generate_dummy.py creates data with outliers. This is CORRECT
+behavior - the preprocessing module correctly identifies and removes outliers.
+
+================================================================================
+END OF VALIDATION REPORT
+================================================================================

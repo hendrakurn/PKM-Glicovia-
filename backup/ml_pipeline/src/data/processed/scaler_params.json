@@ -1,0 +1,19 @@
+{
+  "feature_names": [
+    "glucose_saliva",
+    "ph_value",
+    "fructosamine_umol_l"
+  ],
+  "means": [
+    1.0019429381266802,
+    6.674856717822919,
+    264.0581769205455
+  ],
+  "stds": [
+    0.7666305766254556,
+    0.41291847116039077,
+    52.3662772311477
+  ],
+  "n_train_samples": 98,
+  "n_test_samples": 25
+}

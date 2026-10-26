@@ -1,0 +1,226 @@
+{
+  "pipeline_timestamp": "2026-07-03T12:30:54Z",
+  "data_generation": {
+    "status": "loaded",
+    "path": "/home/hendra/projects/pkmGlico/ml_pipeline/src/data/dummy/generated_data.csv",
+    "n_samples": 150
+  },
+  "preprocessing": {
+    "train_samples": 97,
+    "test_samples": 25,
+    "feature_names": [
+      "glucose_saliva",
+      "ph_value",
+      "viscosity_cP"
+    ],
+    "X_train_path": "/home/hendra/projects/pkmGlico/ml_pipeline/src/data/processed/X_train.npy",
+    "X_test_path": "/home/hendra/projects/pkmGlico/ml_pipeline/src/data/processed/X_test.npy",
+    "y_train_path": "/home/hendra/projects/pkmGlico/ml_pipeline/src/data/processed/y_train.npy",
+    "y_test_path": "/home/hendra/projects/pkmGlico/ml_pipeline/src/data/processed/y_test.npy",
+    "scaler_params_path": "/home/hendra/projects/pkmGlico/ml_pipeline/src/data/processed/scaler_params.json"
+  },
+  "training": {
+    "best_model_path": "/home/hendra/projects/pkmGlico/ml_pipeline/src/models/best_model.pkl",
+    "experiment_log_path": "/home/hendra/projects/pkmGlico/ml_pipeline/src/models/experiment_log.json",
+    "best_params": {
+      "C": 10,
+      "gamma": 0.1
+    },
+    "train_accuracy": 0.9278350515463918,
+    "test_accuracy": 0.92,
+    "overfitting_detected": false,
+    "cv_results": [
+      {
+        "fold": 0,
+        "params": {
+          "C": 10,
+          "gamma": 0.1
+        },
+        "f1_macro": 0.7579365079365079,
+        "accuracy": 0.8,
+        "confusion_matrix": [
+          [
+            9,
+            1,
+            0
+          ],
+          [
+            2,
+            6,
+            0
+          ],
+          [
+            0,
+            1,
+            1
+          ]
+        ],
+        "runtime_seconds": 0.001
+      },
+      {
+        "fold": 1,
+        "params": {
+          "C": 10,
+          "gamma": 0.1
+        },
+        "f1_macro": 0.8741228070175439,
+        "accuracy": 0.9,
+        "confusion_matrix": [
+          [
+            9,
+            0,
+            0
+          ],
+          [
+            1,
+            7,
+            1
+          ],
+          [
+            0,
+            0,
+            2
+          ]
+        ],
+        "runtime_seconds": 0.001
+      },
+      {
+        "fold": 2,
+        "params": {
+          "C": 10,
+          "gamma": 0.1
+        },
+        "f1_macro": 0.960233918128655,
+        "accuracy": 0.9473684210526315,
+        "confusion_matrix": [
+          [
+            9,
+            0,
+            0
+          ],
+          [
+            1,
+            7,
+            0
+          ],
+          [
+            0,
+            0,
+            2
+          ]
+        ],
+        "runtime_seconds": 0.001
+      },
+      {
+        "fold": 3,
+        "params": {
+          "C": 10,
+          "gamma": 0.1
+        },
+        "f1_macro": 0.960233918128655,
+        "accuracy": 0.9473684210526315,
+        "confusion_matrix": [
+          [
+            9,
+            0,
+            0
+          ],
+          [
+            1,
+            7,
+            0
+          ],
+          [
+            0,
+            0,
+            2
+          ]
+        ],
+        "runtime_seconds": 0.001
+      },
+      {
+        "fold": 4,
+        "params": {
+          "C": 10,
+          "gamma": 0.1
+        },
+        "f1_macro": 0.7888888888888889,
+        "accuracy": 0.8421052631578947,
+        "confusion_matrix": [
+          [
+            9,
+            0,
+            0
+          ],
+          [
+            2,
+            6,
+            0
+          ],
+          [
+            0,
+            1,
+            1
+          ]
+        ],
+        "runtime_seconds": 0.001
+      }
+    ]
+  },
+  "evaluation": {
+    "evaluation_report_path": "/home/hendra/projects/pkmGlico/ml_pipeline/src/evaluation/evaluation_report.json",
+    "predictions_path": "/home/hendra/projects/pkmGlico/ml_pipeline/src/evaluation/predictions.npy",
+    "model_type": "SVC",
+    "regression_metrics": {},
+    "classification_metrics": {
+      "accuracy": 0.92,
+      "f1_macro": 0.9410256410256411,
+      "f1_weighted": 0.9190769230769231,
+      "f1_per_class": {
+        "0": 0.9230769230769231,
+        "1": 0.9,
+        "2": 1.0
+      },
+      "confusion_matrix": [
+        [
+          12,
+          0,
+          0
+        ],
+        [
+          2,
+          9,
+          0
+        ],
+        [
+          0,
+          0,
+          2
+        ]
+      ],
+      "num_samples": 25
+    },
+    "clinical_assessment": {
+      "clinical_status": "PASS",
+      "meets_thresholds": {
+        "r2": true,
+        "rmse": true,
+        "mae": true
+      },
+      "issues": [],
+      "recommendations": []
+    },
+    "y_test_path": "/home/hendra/projects/pkmGlico/ml_pipeline/src/data/processed/y_test.npy",
+    "y_pred_path": "/home/hendra/projects/pkmGlico/ml_pipeline/src/evaluation/predictions.npy"
+  },
+  "pipeline_status": "SUCCESS",
+  "pipeline_summary": {
+    "total_samples": 150,
+    "train_samples": 97,
+    "test_samples": 25,
+    "model_type": "rbf",
+    "train_accuracy": 0.9278350515463918,
+    "test_accuracy": 0.92,
+    "clinical_status": "PASS"
+  }
+}

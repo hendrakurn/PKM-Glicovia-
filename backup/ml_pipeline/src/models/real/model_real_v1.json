@@ -1,0 +1,22 @@
+{
+  "model_name": "GlicoSaliva SVC (data nyata)",
+  "version": "v1",
+  "trained_at": "2026-10-21T22:21:27Z",
+  "features": [
+    "v_fru"
+  ],
+  "input_order": [
+    "v_glu",
+    "v_ph",
+    "v_fru"
+  ],
+  "classes_mgdl": [
+    88,
+    148
+  ],
+  "n_sessions": 7,
+  "n_subjects": 2,
+  "loso_accuracy": 1.0,
+  "caveat": "Tiap kelas dari 1 orang; LOSO tidak menguji orang baru. Bukan bukti akurasi prediksi.",
+  "train_csv": "train.csv"
+}
