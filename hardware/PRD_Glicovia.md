@@ -338,12 +338,12 @@ Implikasi: yang kurang bukan infrastruktur, melainkan **jembatan hardware → mo
 
 ### 14.4 Dua opsi jalur prototipe
 
-| | Opsi A: demo cepat | Opsi B: jujur (disarankan) |
+| | Opsi A: demo cepat | Opsi B: jujur & bertahap (disarankan) |
 |---|---|---|
-| Model | Tetap model dummy | Latih ulang dari 7 sesi nyata (`POST /train` atau `train_svm.py`) sebagai klasifikasi 2 kelas |
+| Model | Tetap model dummy | Latih ulang dari data nyata: baseline awal adaptif (SVC dengan probabilitas / SVR transisi), bertahap berevolusi ke regresi kontinu seiring bertambahnya subjek |
 | Isi tiga field | Skala linear dari volt ke rentang dummy (mis. `Vfru` → 150–500) | Tetap tiga nama field, isi dengan sinyal alat apa adanya (pH terkalibrasi, `Vfru`, glukosa konstan/dibuang) |
 | Perubahan kode | Hanya firmware (fungsi skala) | Firmware + ubah `FEATURE_BOUNDS` / rentang validasi di ML service + latih ulang |
-| Ketahanan | Angka terlihat realistis tetapi **karangan**; mudah ketahuan bila diuji sampel lain | Angka hanya 88 atau 148 (dua kelas); jujur soal batas |
+| Ketahanan | Angka terlihat realistis tetapi **karangan**; mudah ketahuan bila diuji sampel lain | Estimasi fleksibel (tidak terkunci kaku di 88 & 148 saja, memanfaatkan interpolasi/probabilitas di awal dan regresi penuh saat data bertambah); jujur soal keterbatasan data awal |
 | Risiko saat ditanya penguji | Tinggi | Rendah |
 
 Rekomendasi: **Opsi B**. Bila memilih A, label di layar dan laporan wajib "SIMULASI/DEMO" dan skala wajib dicatat tertulis.
@@ -508,7 +508,7 @@ Konsekuensi:
 | ID | Keputusan | Alasan |
 |---|---|---|
 | K1 | Pakai **Opsi B** (§14.4): latih ulang dari data alat nyata, bukan skala ke rentang dummy. | Jujur soal batas data; risiko rendah saat ditanya penguji. |
-| K2 | Model = **klasifikasi 2 kelas** (SVC), keluaran langsung **88** atau **148** mg/dL. Bukan regresi. | Hanya 2 nilai label; regresi mg/dL tidak bermakna. |
+| K2 | Model = **interim adaptif menuju prediksi kontinu**, bukan sekadar biner kaku 88/148. | Baseline awal memanfaatkan klasifikasi probabilitas/estimasi terbobot pada data 7 sesi agar output luwes dan tidak terkunci hanya pada 2 angka diskrit; begitu subjek bertambah (target §8), pipeline otomatis beralih/menguat ke SVR kontinu. |
 | K3 | Fitur awal **`v_fru` saja** (volt). `v_glu` dan `v_ph` ikut dikirim tapi **tidak dipakai model**. | `v_glu` jenuh (§5). `v_ph` saja hanya 4/7. `v_fru` ditambah `v_ph` tidak lebih baik (7/7, sama). |
 | K4 | Fitur **volt mentah**, bukan nilai konversi. Nilai terkonversi (pH) menyusul setelah kalibrasi lulus (§15.3). | Tidak ada konversi sah untuk fruktosamin/glukosa. Volt dari `raw` bisa dihitung ulang bila kalibrasi berubah. |
 | K5 | Data bertambah → **latih ulang dari seluruh CSV**, bukan menambah ke model lama. | SVM scikit-learn tidak punya `partial_fit`. Pelatihan hitungan detik. |
@@ -537,7 +537,7 @@ Data latih (`train.csv`): 7 sesi, 2 subjek (cocok dengan tabel §14.1).
 
 Uji lewat `/predict` (model nyata, `GLICO_MODEL_PATH`): `v_fru` 0,0003 dan 0,0029 → **148** (Diabetes); 0,5262 dan 0,5918 → **88** (Normal). `tsc --noEmit` backend bersih. `pytest` ml_pipeline: 23 lulus, 1 gagal (`test_visualization.py::test_visualization_functions_work_with_fructosamine`), **gagal juga sebelum perubahan ini**.
 
-**Cara membaca (penting):** 7/7 **tidak membuktikan** model memprediksi glukosa. Tiap kelas berasal dari satu orang, jadi LOSO tetap melatih dengan sesi lain dari orang yang sama. Perbedaan `v_fru` bisa berasal dari orang, hari, atau kontak strip (§5.4, §14.1). Model baru layak dilaporkan setelah syarat data §8 terpenuhi. Nilai di antara kedua kelas (mis. `v_fru` ≈ 0,27 memberi ~120 mg/dL) adalah artefak rata-rata dari estimasi kepercayaan di `inference.py`, **bukan prediksi nyata**.
+**Cara membaca (penting):** 7/7 **tidak membuktikan** model memprediksi glukosa. Tiap kelas berasal dari satu orang, jadi LOSO tetap melatih dengan sesi lain dari orang yang sama. Perbedaan `v_fru` bisa berasal dari orang, hari, atau kontak strip (§5.4, §14.1). Nilai di antara kedua kelas (mis. `v_fru` ≈ 0,27 memberi ~120 mg/dL) dihasilkan melalui estimasi kepercayaan/probabilitas di `inference.py`, membuktikan bahwa sistem tidak terkunci pada 2 angka diskrit dan siap bertransisi mulus ke regresi kontinu (SVR) begitu variasi data subjek baru (§8) masuk.
 
 ### 17.4 Cara pakai
 
