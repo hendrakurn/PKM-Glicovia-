@@ -111,7 +111,7 @@ def main():
                 if len(parts) >= 6:
                     if not header_written:
                         # Buat default header jika belum lewat header
-                        f.write("Time_ms,Raw_A0,Volt_Glukosa,Raw_A1,Volt_Fruktosa,Raw_A2,Volt_pH\n")
+                        f.write("Time_ms,Raw_A0,Volt_Glukosa,Raw_A1,Volt_pH,Raw_A2,Volt_Fruktosa\n")
                         header_written = True
 
                     f.write(line + "\n")
