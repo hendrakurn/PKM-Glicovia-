@@ -1,0 +1,68 @@
+{
+  "buat_grafik.py": {
+    "mtime": 1792639116.5550187,
+    "seen": 1792639357.3819978,
+    "ast_hash": "5bb10b22e514583a847235a684f5ef33",
+    "semantic_hash": ""
+  },
+  "buat_grafik_klasifikasi.py": {
+    "mtime": 1792639307.4407783,
+    "seen": 1792639357.3820019,
+    "ast_hash": "32b292a2c28f9d5c6eed744222164acb",
+    "semantic_hash": ""
+  },
+  "hasil_pembahasan.md": {
+    "mtime": 1792639127.1327977,
+    "seen": 1792639357.3820035,
+    "ast_hash": "22b9f8f002c37340f9396fec0d7bc1e3",
+    "semantic_hash": ""
+  },
+  "hasil_pembahasan_2kelas.md": {
+    "mtime": 1792639341.6538994,
+    "seen": 1792639357.3820047,
+    "ast_hash": "e41e99240c91700cf59ae0cd1424b585",
+    "semantic_hash": ""
+  },
+  "gambar10_rerata_fase_stabil.png": {
+    "mtime": 1792639126.053919,
+    "seen": 1792639357.3820055,
+    "ast_hash": "449af8d6d6b8d57f562a6c6bcfe47d5c",
+    "semantic_hash": ""
+  },
+  "gambar11_ruang_fitur.png": {
+    "mtime": 1792639126.6356902,
+    "seen": 1792639357.3820066,
+    "ast_hash": "f227826d61eb68b053acd5285173fbba",
+    "semantic_hash": ""
+  },
+  "gambar12_distribusi_sampel.png": {
+    "mtime": 1792639315.2130833,
+    "seen": 1792639357.3820076,
+    "ast_hash": "c657d0f9e5640a2922a854cafc0142fd",
+    "semantic_hash": ""
+  },
+  "gambar13_confusion_matrix.png": {
+    "mtime": 1792639315.5724163,
+    "seen": 1792639357.3820083,
+    "ast_hash": "d37b0840d7c524e5297af65c8ed060ae",
+    "semantic_hash": ""
+  },
+  "gambar14_batas_keputusan.png": {
+    "mtime": 1792639316.5255115,
+    "seen": 1792639357.382009,
+    "ast_hash": "c16b8e03c19cb8f907731680b294871e",
+    "semantic_hash": ""
+  },
+  "gambar15_ablasi_fitur.png": {
+    "mtime": 1792639316.7105062,
+    "seen": 1792639357.3820105,
+    "ast_hash": "e366b46aa89e15b437766777f6e3a8c4",
+    "semantic_hash": ""
+  },
+  "gambar9_respons_waktu.png": {
+    "mtime": 1792639124.0131505,
+    "seen": 1792639357.3820114,
+    "ast_hash": "2fad7e7fcb1b5624b446e04c4e8d2df8",
+    "semantic_hash": ""
+  }
+}

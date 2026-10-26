@@ -1,0 +1,238 @@
+{
+  "directed": false,
+  "multigraph": false,
+  "graph": {},
+  "nodes": [
+    {
+      "id": "buat_grafik_load",
+      "label": "load()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "buat_grafik.py",
+      "file_type": "code",
+      "norm_label": "load()",
+      "source_file": "buat_grafik.py",
+      "source_location": "L27"
+    },
+    {
+      "id": "buat_grafik_settle",
+      "label": "settle()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "buat_grafik.py",
+      "file_type": "code",
+      "norm_label": "settle()",
+      "source_file": "buat_grafik.py",
+      "source_location": "L34"
+    },
+    {
+      "id": "buat_grafik_klasifikasi_evaluate",
+      "label": "evaluate()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "buat_grafik_klasifikasi.py",
+      "file_type": "code",
+      "norm_label": "evaluate()",
+      "source_file": "buat_grafik_klasifikasi.py",
+      "source_location": "L41"
+    },
+    {
+      "id": "buat_grafik",
+      "label": "buat_grafik.py",
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "buat_grafik.py",
+      "file_type": "code",
+      "norm_label": "buat_grafik.py",
+      "source_file": "buat_grafik.py",
+      "source_location": "L1"
+    },
+    {
+      "id": "buat_grafik_rationale_1",
+      "label": "Grafik Hasil dan Pembahasan artikel Glicovia (Gambar 9-11) dari rekaman sensor\u2026",
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "buat_grafik.py",
+      "file_type": "rationale",
+      "norm_label": "grafik hasil dan pembahasan artikel glicovia (gambar 9-11) dari rekaman sensor...",
+      "source_file": "buat_grafik.py",
+      "source_location": "L1"
+    },
+    {
+      "id": "buat_grafik_rationale_35",
+      "label": "Waktu pertama sinyal masuk dan bertahan dalam +-(1-frac)*|final-awal| dari\u2026",
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "buat_grafik.py",
+      "file_type": "rationale",
+      "norm_label": "waktu pertama sinyal masuk dan bertahan dalam +-(1-frac)*|final-awal| dari...",
+      "source_file": "buat_grafik.py",
+      "source_location": "L35"
+    },
+    {
+      "id": "buat_grafik_klasifikasi",
+      "label": "buat_grafik_klasifikasi.py",
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "buat_grafik_klasifikasi.py",
+      "file_type": "code",
+      "norm_label": "buat_grafik_klasifikasi.py",
+      "source_file": "buat_grafik_klasifikasi.py",
+      "source_location": "L1"
+    },
+    {
+      "id": "buat_grafik_klasifikasi_rationale_1",
+      "label": "Eksplorasi 2 kelas (Normal vs Diabetes): tiap pembacaan fase stabil dianggap\u2026",
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "buat_grafik_klasifikasi.py",
+      "file_type": "rationale",
+      "norm_label": "eksplorasi 2 kelas (normal vs diabetes): tiap pembacaan fase stabil dianggap...",
+      "source_file": "buat_grafik_klasifikasi.py",
+      "source_location": "L1"
+    },
+    {
+      "id": "hasil_pembahasan",
+      "label": "hasil_pembahasan.md",
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "hasil_pembahasan.md",
+      "file_type": "document",
+      "node_kind": "page",
+      "norm_label": "hasil_pembahasan.md",
+      "source_file": "hasil_pembahasan.md",
+      "source_location": "L1"
+    },
+    {
+      "id": "hasil_pembahasan_respons_sensor_terhadap_dua_kelas_sampel",
+      "label": "Respons Sensor terhadap Dua Kelas Sampel",
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "hasil_pembahasan.md",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "respons sensor terhadap dua kelas sampel",
+      "source_file": "hasil_pembahasan.md",
+      "source_location": "L1"
+    },
+    {
+      "id": "hasil_pembahasan_2kelas",
+      "label": "hasil_pembahasan_2kelas.md",
+      "_origin": "ast",
+      "community": 3,
+      "community_name": "hasil_pembahasan_2kelas.md",
+      "file_type": "document",
+      "node_kind": "page",
+      "norm_label": "hasil_pembahasan_2kelas.md",
+      "source_file": "hasil_pembahasan_2kelas.md",
+      "source_location": "L1"
+    },
+    {
+      "id": "hasil_pembahasan_2kelas_klasifikasi_dua_kelas_berbasis_svm_pada_pembacaan_sensor",
+      "label": "Klasifikasi Dua Kelas Berbasis SVM pada Pembacaan Sensor",
+      "_origin": "ast",
+      "community": 3,
+      "community_name": "hasil_pembahasan_2kelas.md",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "klasifikasi dua kelas berbasis svm pada pembacaan sensor",
+      "source_file": "hasil_pembahasan_2kelas.md",
+      "source_location": "L1"
+    }
+  ],
+  "links": [
+    {
+      "source": "buat_grafik",
+      "target": "buat_grafik_load",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "buat_grafik.py",
+      "source_location": "L27",
+      "weight": 1.0
+    },
+    {
+      "source": "buat_grafik",
+      "target": "buat_grafik_settle",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "buat_grafik.py",
+      "source_location": "L34",
+      "weight": 1.0
+    },
+    {
+      "source": "buat_grafik_klasifikasi",
+      "target": "buat_grafik_klasifikasi_evaluate",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "buat_grafik_klasifikasi.py",
+      "source_location": "L41",
+      "weight": 1.0
+    },
+    {
+      "source": "hasil_pembahasan",
+      "target": "hasil_pembahasan_respons_sensor_terhadap_dua_kelas_sampel",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "hasil_pembahasan.md",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "hasil_pembahasan_2kelas",
+      "target": "hasil_pembahasan_2kelas_klasifikasi_dua_kelas_berbasis_svm_pada_pembacaan_sensor",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "hasil_pembahasan_2kelas.md",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "buat_grafik_klasifikasi_rationale_1",
+      "target": "buat_grafik_klasifikasi",
+      "relation": "rationale_for",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "buat_grafik_klasifikasi.py",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "buat_grafik_rationale_1",
+      "target": "buat_grafik",
+      "relation": "rationale_for",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "buat_grafik.py",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "buat_grafik_rationale_35",
+      "target": "buat_grafik_settle",
+      "relation": "rationale_for",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "buat_grafik.py",
+      "source_location": "L35",
+      "weight": 1.0
+    }
+  ],
+  "hyperedges": [],
+  "built_at_commit": "3a9f63588bcbf266e23b5a5561629a868dab00f6"
+}
