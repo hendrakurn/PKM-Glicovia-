@@ -157,11 +157,57 @@ async function resolveModelVersion(): Promise<ModelVersionRow> {
   });
 }
 
-// Firmware mengirim ph = null sebelum kalibrasi; volt mentahnya ada di raw_payload.raw.v_ph.
-function rawVolt(reading: SensorReadingRow, key: string): number | null {
+// Koefisien kalibrasi SEMENTARA (bukan hasil fit buffer/larutan standar). Harus sama dengan CAL di
+// ml_pipeline/src/convert_data_log.py, karena model dilatih dari fitur yang dikonversi dengan nilai ini.
+const PROVISIONAL_CAL = {
+  rfOhm: 100e3,
+  ph: { m: -0.05916, c: 0.3226 },   // V = m*pH + c
+  glu: { a: 1000, b: 0 },           // I_nA = a*C + b
+  fru: { a: 35, b: -4000 }          // I_nA = a*C + b
+};
+const ML_BOUNDS = { glucose: [0.1, 10], ph: [4, 9], fructosamine: [150, 500] } as const;
+// Satuan yang dikirim firmware bila nilainya sudah terkalibrasi.
+const REAL_UNITS = { ph: ['pH'], salivary_glucose: ['mg/dL'], fructosamine: ['umol/L', 'µmol/L'] } as const;
+
+type Param = keyof typeof REAL_UNITS;
+
+function rawValue(reading: SensorReadingRow, key: string): number | null {
   const raw = (reading.raw_payload as { raw?: Record<string, unknown> } | null)?.raw;
   const value = raw?.[key];
   return typeof value === 'number' && Number.isFinite(value) ? value : null;
+}
+
+function clamp(value: number, [lo, hi]: readonly [number, number]): number {
+  return Math.min(Math.max(value, lo), hi);
+}
+
+// Volt mentah -> satuan riil dengan kalibrasi sementara. null bila volt yang dibutuhkan tidak ada.
+function provisionalValue(reading: SensorReadingRow, param: Param): number | null {
+  if (param === 'ph') {
+    const v = rawValue(reading, 'v_ph');
+    return v === null ? null : clamp((v - PROVISIONAL_CAL.ph.c) / PROVISIONAL_CAL.ph.m, ML_BOUNDS.ph);
+  }
+  if (param === 'salivary_glucose') {
+    const i = rawValue(reading, 'i_glu_nA');
+    return i === null ? null : clamp((i - PROVISIONAL_CAL.glu.b) / PROVISIONAL_CAL.glu.a, ML_BOUNDS.glucose);
+  }
+  const vMid = rawValue(reading, 'v_mid');
+  const vFru = rawValue(reading, 'v_fru');
+  if (vMid === null || vFru === null) return null;
+  const iNA = ((vMid - vFru) / PROVISIONAL_CAL.rfOhm) * 1e9;
+  return clamp((iNA - PROVISIONAL_CAL.fru.b) / PROVISIONAL_CAL.fru.a, ML_BOUNDS.fructosamine);
+}
+
+// Firmware mengisi kolom ph/fructosamine/salivary_glucose dengan volt (atau null) sebelum kalibrasi,
+// dan menandainya lewat raw_payload.units.<param> ("V"/"none"). Karena itu keputusan lewat `units`,
+// bukan lewat null. Tanpa `units` (firmware lama) nilai kolom dipakai apa adanya bila ada.
+function resolveParam(reading: SensorReadingRow, param: Param, column: string | number | null): number | null {
+  const units = (reading.raw_payload as { units?: Record<string, unknown> } | null)?.units;
+  const unit = units?.[param];
+  const isReal = typeof unit === 'string' ? (REAL_UNITS[param] as readonly string[]).includes(unit) : column !== null;
+  if (isReal && column !== null && column !== '') return Number(column);
+  logger.warn('Using provisional calibration (raw volts) for inference', { readingId: reading.id, param });
+  return provisionalValue(reading, param);
 }
 
 export function mapSensorReadingToMlPayload(reading: SensorReadingRow): MlPredictionPayload {
@@ -171,9 +217,9 @@ export function mapSensorReadingToMlPayload(reading: SensorReadingRow): MlPredic
 
   return {
     id: reading.id,
-    glucose_saliva: asFiniteNumber(reading.salivary_glucose ?? rawVolt(reading, 'v_glu'), 'salivary_glucose'),
-    ph_value: asFiniteNumber(reading.ph ?? rawVolt(reading, 'v_ph'), 'ph'),
-    fructosamine_umol_l: asFiniteNumber(reading.fructosamine ?? rawVolt(reading, 'v_fru'), 'fructosamine')
+    glucose_saliva: asFiniteNumber(resolveParam(reading, 'salivary_glucose', reading.salivary_glucose), 'salivary_glucose'),
+    ph_value: asFiniteNumber(resolveParam(reading, 'ph', reading.ph), 'ph'),
+    fructosamine_umol_l: asFiniteNumber(resolveParam(reading, 'fructosamine', reading.fructosamine), 'fructosamine')
   };
 }
 
