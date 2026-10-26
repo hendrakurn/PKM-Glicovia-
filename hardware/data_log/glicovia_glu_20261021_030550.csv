@@ -1,0 +1,6 @@
+waktu_iso,t_detik,raw,Vfru_V,Vglu_V,VpH_V,Vmid_V,I_nA,errI2C,status
+2026-10-21T03:05:51.269,0.542,-22996,0.0000,0.0000,1.0026,0.9118,7186.25,0,JENUH -> arus > rentang / short / lonjakan awal
+2026-10-21T03:05:51.692,0.964,-22990,0.0000,0.0000,1.3965,0.9116,7184.38,0,JENUH -> arus > rentang / short / lonjakan awal
+2026-10-21T03:05:52.115,1.387,-22969,0.0000,0.0000,1.7638,0.9121,7177.81,0,JENUH -> arus > rentang / short / lonjakan awal
+2026-10-21T03:05:52.538,1.811,-22964,0.0000,0.0000,1.6459,0.9135,7176.25,0,JENUH -> arus > rentang / short / lonjakan awal
+2026-10-21T03:05:52.961,2.234,-22977,0.0000,0.0000,1.2513,0.9135,7180.31,0,JENUH -> arus > rentang / short / lonjakan awal
