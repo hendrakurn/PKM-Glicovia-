@@ -139,7 +139,7 @@ def _bootstrap_confidence(
         return base, base, confidence_level
 
     rng = np.random.default_rng(42)
-    perturb_scale = np.maximum(np.abs(X_sample).mean(), 1.0) * 0.02
+    perturb_scale = np.maximum(np.abs(X_sample), 1.0) * 0.02  # per fitur: satuan riil (pH vs µmol/L) beda skala
     preds = []
     for _ in range(n_bootstraps):
         jitter = rng.normal(0, perturb_scale, size=X_sample.shape)
