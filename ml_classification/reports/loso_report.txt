@@ -1,0 +1,15 @@
+Evaluasi leave-one-subject-out | fitur=['glucose_saliva', 'ph_value'] | n_subjek=6, n_sesi=11
+Subjek per kelas: {'NORMAL': 4, 'PREDIABETES': 1, 'DIABETES': 1}
+PERINGATAN: ada kelas dengan subjek < 3. Angka di bawah BUKAN klaim akurasi.
+
+model         acc  F1mac rec_NORM  rec_PRED  rec_DIAB   FN_D->N
+SVC-rbf      0.18   0.10      0.29      0.00      0.00        3
+majority     0.64   0.26      1.00      0.00      0.00        3
+logreg       0.18   0.10      0.29      0.00      0.00        3
+knn3         0.36   0.18      0.57      0.00      0.00        3
+
+Confusion matrix SVC-rbf (baris=label, kolom=prediksi; ['NORMAL', 'PREDIABETES', 'DIABETES']; n_subjek=6, n_sesi=11):
+  NORMAL      [2, 1, 4]
+  PREDIABETES [1, 0, 0]
+  DIABETES    [3, 0, 0]
+False negative DIABETES -> NORMAL (SVC): 3

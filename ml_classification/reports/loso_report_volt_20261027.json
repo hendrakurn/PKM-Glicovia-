@@ -1,0 +1,190 @@
+{
+  "evaluated_at": "2026-10-26T21:22:03Z",
+  "protocol": "leave-one-subject-out",
+  "features": [
+    "v_glu",
+    "v_ph"
+  ],
+  "n_sessions": 11,
+  "n_subjects": 6,
+  "subjects_per_class": {
+    "NORMAL": 4,
+    "PREDIABETES": 1,
+    "DIABETES": 1
+  },
+  "claim_allowed": false,
+  "models": {
+    "SVC-rbf": {
+      "n_eval_sessions": 11,
+      "accuracy": 0.18181818181818182,
+      "f1_macro": 0.10256410256410257,
+      "per_class": {
+        "NORMAL": {
+          "precision": 0.3333333333333333,
+          "recall": 0.2857142857142857,
+          "f1": 0.3076923076923077,
+          "support": 7
+        },
+        "PREDIABETES": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 1
+        },
+        "DIABETES": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 3
+        }
+      },
+      "confusion_matrix": [
+        [
+          2,
+          1,
+          4
+        ],
+        [
+          1,
+          0,
+          0
+        ],
+        [
+          3,
+          0,
+          0
+        ]
+      ],
+      "fn_diabetes_to_normal": 3
+    },
+    "majority": {
+      "n_eval_sessions": 11,
+      "accuracy": 0.6363636363636364,
+      "f1_macro": 0.25925925925925924,
+      "per_class": {
+        "NORMAL": {
+          "precision": 0.6363636363636364,
+          "recall": 1.0,
+          "f1": 0.7777777777777778,
+          "support": 7
+        },
+        "PREDIABETES": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 1
+        },
+        "DIABETES": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 3
+        }
+      },
+      "confusion_matrix": [
+        [
+          7,
+          0,
+          0
+        ],
+        [
+          1,
+          0,
+          0
+        ],
+        [
+          3,
+          0,
+          0
+        ]
+      ],
+      "fn_diabetes_to_normal": 3
+    },
+    "logreg": {
+      "n_eval_sessions": 11,
+      "accuracy": 0.18181818181818182,
+      "f1_macro": 0.10256410256410257,
+      "per_class": {
+        "NORMAL": {
+          "precision": 0.3333333333333333,
+          "recall": 0.2857142857142857,
+          "f1": 0.3076923076923077,
+          "support": 7
+        },
+        "PREDIABETES": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 1
+        },
+        "DIABETES": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 3
+        }
+      },
+      "confusion_matrix": [
+        [
+          2,
+          1,
+          4
+        ],
+        [
+          1,
+          0,
+          0
+        ],
+        [
+          3,
+          0,
+          0
+        ]
+      ],
+      "fn_diabetes_to_normal": 3
+    },
+    "knn3": {
+      "n_eval_sessions": 11,
+      "accuracy": 0.2727272727272727,
+      "f1_macro": 0.14285714285714285,
+      "per_class": {
+        "NORMAL": {
+          "precision": 0.42857142857142855,
+          "recall": 0.42857142857142855,
+          "f1": 0.42857142857142855,
+          "support": 7
+        },
+        "PREDIABETES": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 1
+        },
+        "DIABETES": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 3
+        }
+      },
+      "confusion_matrix": [
+        [
+          3,
+          0,
+          4
+        ],
+        [
+          1,
+          0,
+          0
+        ],
+        [
+          3,
+          0,
+          0
+        ]
+      ],
+      "fn_diabetes_to_normal": 3
+    }
+  }
+}

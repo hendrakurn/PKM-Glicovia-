@@ -1,0 +1,96 @@
+{
+  "model_name": "GlicoSaliva SVC 3 kelas",
+  "model_type": "SVC-rbf",
+  "trained_at": "2026-10-28T23:46:22Z",
+  "features": [
+    "glucose_saliva",
+    "ph_value"
+  ],
+  "input_order": [
+    "glucose_saliva",
+    "ph_value",
+    "fructosamine_umol_l"
+  ],
+  "calibration": {
+    "ph": {
+      "m": -0.05916,
+      "c": 0.3226
+    },
+    "glu": {
+      "a": 1000.0,
+      "b": 0.0
+    },
+    "fru": {
+      "a": 35.0,
+      "b": -4000.0
+    },
+    "rf_ohm": 100000.0
+  },
+  "classes": [
+    "NORMAL",
+    "PREDIABETES",
+    "DIABETES"
+  ],
+  "params": {
+    "C": 1.0,
+    "gamma": "scale",
+    "class_weight": "balanced"
+  },
+  "n_sessions": 36,
+  "n_subjects": 12,
+  "subjects_per_class": {
+    "NORMAL": 4,
+    "PREDIABETES": 4,
+    "DIABETES": 4
+  },
+  "batches": [
+    "synthetic"
+  ],
+  "loso": {
+    "n_eval_sessions": 36,
+    "accuracy": 1.0,
+    "f1_macro": 1.0,
+    "per_class": {
+      "NORMAL": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "support": 12
+      },
+      "PREDIABETES": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "support": 12
+      },
+      "DIABETES": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "support": 12
+      }
+    },
+    "confusion_matrix": [
+      [
+        12,
+        0,
+        0
+      ],
+      [
+        0,
+        12,
+        0
+      ],
+      [
+        0,
+        0,
+        12
+      ]
+    ],
+    "fn_diabetes_to_normal": 0
+  },
+  "model_not_ready": false,
+  "caveat": "Data sintetis untuk uji integrasi. BUKAN klaim akurasi.",
+  "version": "test-synthetic",
+  "synthetic": true
+}

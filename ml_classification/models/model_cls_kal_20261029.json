@@ -1,0 +1,97 @@
+{
+  "version": "kal_20261029",
+  "model_name": "GlicoSaliva SVC 3 kelas",
+  "model_type": "SVC-rbf",
+  "trained_at": "2026-10-28T21:34:57Z",
+  "features": [
+    "glucose_saliva",
+    "ph_value"
+  ],
+  "input_order": [
+    "glucose_saliva",
+    "ph_value",
+    "fructosamine_umol_l"
+  ],
+  "calibration": {
+    "ph": {
+      "m": -0.05916,
+      "c": 0.3226
+    },
+    "glu": {
+      "a": 1000.0,
+      "b": 0.0
+    },
+    "fru": {
+      "a": 35.0,
+      "b": -4000.0
+    },
+    "rf_ohm": 100000.0
+  },
+  "classes": [
+    "NORMAL",
+    "PREDIABETES",
+    "DIABETES"
+  ],
+  "params": {
+    "C": 1.0,
+    "gamma": "scale",
+    "class_weight": "balanced"
+  },
+  "n_sessions": 11,
+  "n_subjects": 6,
+  "subjects_per_class": {
+    "NORMAL": 4,
+    "PREDIABETES": 1,
+    "DIABETES": 1
+  },
+  "batches": [
+    "20261021",
+    "20261026"
+  ],
+  "loso": {
+    "n_eval_sessions": 11,
+    "accuracy": 0.18181818181818182,
+    "f1_macro": 0.10256410256410257,
+    "per_class": {
+      "NORMAL": {
+        "precision": 0.3333333333333333,
+        "recall": 0.2857142857142857,
+        "f1": 0.3076923076923077,
+        "support": 7
+      },
+      "PREDIABETES": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 1
+      },
+      "DIABETES": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 3
+      }
+    },
+    "confusion_matrix": [
+      [
+        2,
+        1,
+        4
+      ],
+      [
+        1,
+        0,
+        0
+      ],
+      [
+        3,
+        0,
+        0
+      ]
+    ],
+    "fn_diabetes_to_normal": 3
+  },
+  "model_not_ready": true,
+  "caveat": "Subjek per kelas < 3 ({'NORMAL': 4, 'PREDIABETES': 1, 'DIABETES': 1}). Kelas dengan 1 subjek tidak pernah ada di data latih saat subjeknya diuji. Metrik LOSO bukan klaim akurasi.",
+  "train_csv": "train.csv"
+}
