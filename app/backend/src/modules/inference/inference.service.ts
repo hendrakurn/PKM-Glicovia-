@@ -26,6 +26,13 @@ interface MlPredictionResponse {
   timestamp?: unknown;
 }
 
+// Balasan ml_classification (cls/api.py): kelas tanpa angka mg/dL.
+interface MlClassificationResponse {
+  status?: unknown;
+  clinical_category?: unknown;
+  confidence_score?: unknown;
+}
+
 export interface InferenceResult {
   reading: SensorReadingRow;
   modelVersion: ModelVersionRow;
@@ -37,6 +44,11 @@ export interface InferenceResult {
 const FALLBACK_MODEL_INFO = {
   modelName: 'GlicoSaliva SVR',
   version: '2.0.0'
+};
+// Harus beda dari FALLBACK_MODEL_INFO: hasil disimpan per (reading, model_version), nama sama = saling menimpa.
+const FALLBACK_CLS_MODEL_INFO = {
+  modelName: 'GlicoSaliva SVC 3 kelas',
+  version: 'unknown'
 };
 
 function httpError(message: string, statusCode: number): Error & { statusCode: number } {
@@ -93,10 +105,10 @@ function normalizeMlPrediction(response: MlPredictionResponse): {
   };
 }
 
-async function fetchMlJson<T>(path: string, init?: RequestInit): Promise<T> {
+async function fetchMlJson<T>(path: string, init?: RequestInit, baseUrl: string = env.ML_SERVICE_URL): Promise<T> {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), env.ML_SERVICE_TIMEOUT_MS);
-  const url = new URL(path, env.ML_SERVICE_URL).toString();
+  const url = new URL(path, baseUrl).toString();
 
   try {
     const response = await fetch(url, {
@@ -124,18 +136,26 @@ async function fetchMlJson<T>(path: string, init?: RequestInit): Promise<T> {
     if (error instanceof SyntaxError) {
       throw httpError(`ML service ${path} returned invalid JSON`, 502);
     }
+    // fetch gagal terhubung: pesan bawaannya cuma "fetch failed"; sertakan kode penyebab (ECONNREFUSED, ECONNRESET, ...).
+    if (error instanceof TypeError && error.cause) {
+      const cause = error.cause as { code?: string; message?: string };
+      throw httpError(`ML service ${path} unreachable at ${baseUrl}: ${cause.code ?? cause.message ?? 'unknown'}`, 502);
+    }
     throw error;
   } finally {
     clearTimeout(timeout);
   }
 }
 
-async function resolveModelVersion(): Promise<ModelVersionRow> {
-  let modelName = FALLBACK_MODEL_INFO.modelName;
-  let version = FALLBACK_MODEL_INFO.version;
+async function resolveModelVersion(
+  baseUrl: string = env.ML_SERVICE_URL,
+  fallback: { modelName: string; version: string } = FALLBACK_MODEL_INFO
+): Promise<ModelVersionRow> {
+  let modelName = fallback.modelName;
+  let version = fallback.version;
 
   try {
-    const modelInfo = await fetchMlJson<MlModelInfoResponse>('/model-info');
+    const modelInfo = await fetchMlJson<MlModelInfoResponse>('/model-info', undefined, baseUrl);
     if (typeof modelInfo.model_name === 'string' && modelInfo.model_name.trim()) {
       modelName = modelInfo.model_name.trim();
     }
@@ -290,42 +310,108 @@ export async function runInferenceForSensorReadingId(sensorReadingId: string): P
   return runInferenceForSensorReading(reading);
 }
 
-export async function triggerInferenceForSensorReading(reading: SensorReadingRow): Promise<void> {
+// Klasifikasi (ml_classification): kelas tanpa mg/dL, jadi glucose_estimate = null.
+// Hanya status ok/uncertain yang dianggap hasil; model_not_ready / out_of_range disimpan failed.
+export async function runClassificationForSensorReading(reading: SensorReadingRow, baseUrl: string): Promise<PredictionResultRow> {
+  const modelVersion = await resolveModelVersion(baseUrl, FALLBACK_CLS_MODEL_INFO);
+
   try {
-    const result = await runInferenceForSensorReading(reading);
+    const mlPayload = mapSensorReadingToMlPayload(reading);
+    const response = await fetchMlJson<MlClassificationResponse>('/predict', {
+      method: 'POST',
+      body: JSON.stringify(mlPayload)
+    }, baseUrl);
+    const category = getCategoryName(response.clinical_category);
+    if ((response.status !== 'ok' && response.status !== 'uncertain') || !category) {
+      logger.info('Classification returned no class', { sensorReadingId: reading.id, status: response.status });
+      return await persistFailedPrediction(reading.id, modelVersion.id);
+    }
+    const confidence = Number(response.confidence_score);
+    return await savePredictionResult({
+      id: randomUUID(),
+      sensorReadingId: reading.id,
+      modelVersionId: modelVersion.id,
+      glucoseEstimate: null,
+      clinicalCategory: category,
+      confidenceScore: Number.isFinite(confidence) ? confidence : null,
+      inferenceStatus: 'success',
+      predictedAt: new Date().toISOString()
+    });
+  } catch (error) {
+    await persistFailedPrediction(reading.id, modelVersion.id);
+    throw error;
+  }
+}
+
+async function publishPredictionToDevice(reading: SensorReadingRow, fields: Record<string, unknown>): Promise<void> {
+  if (!reading.device_id) return;
+  try {
+    const device = await getDeviceById(reading.device_id);
+    if (device) {
+      const predictionTopic = `${env.MQTT_TOPIC_PREFIX}/devices/${device.device_code}/predictions`;
+      await publishMqttMessage(predictionTopic, JSON.stringify({ device_code: device.device_code, ...fields }));
+      logger.info('Inference prediction published to MQTT for device', {
+        topic: predictionTopic,
+        deviceCode: device.device_code
+      });
+    }
+  } catch (pubErr) {
+    logger.warn('Failed to publish prediction to MQTT', { error: pubErr });
+  }
+}
+
+export async function triggerInferenceForSensorReading(reading: SensorReadingRow): Promise<void> {
+  const clsUrl = env.ML_CLS_SERVICE_URL;
+  const [regression, classification] = await Promise.allSettled([
+    runInferenceForSensorReading(reading),
+    clsUrl ? runClassificationForSensorReading(reading, clsUrl) : Promise.resolve(null)
+  ]);
+
+  if (regression.status === 'fulfilled') {
     logger.info('Inference prediction stored', {
       sensorReadingId: reading.id,
-      predictionResultId: result.prediction.id,
-      modelVersionId: result.modelVersion.id,
-      inferenceStatus: result.prediction.inference_status
+      predictionResultId: regression.value.prediction.id,
+      modelVersionId: regression.value.modelVersion.id,
+      inferenceStatus: regression.value.prediction.inference_status
     });
-
-    if (result.prediction.inference_status === 'success' && reading.device_id) {
-      try {
-        const device = await getDeviceById(reading.device_id);
-        if (device) {
-          const predictionTopic = `${env.MQTT_TOPIC_PREFIX}/devices/${device.device_code}/predictions`;
-          const payload = JSON.stringify({
-            device_code: device.device_code,
-            glucose_estimate: Number(result.prediction.glucose_estimate),
-            clinical_category: result.prediction.clinical_category,
-            confidence_score: Number(result.prediction.confidence_score),
-            timestamp: result.prediction.predicted_at
-          });
-          await publishMqttMessage(predictionTopic, payload);
-          logger.info('Inference prediction published to MQTT for device', {
-            topic: predictionTopic,
-            deviceCode: device.device_code
-          });
-        }
-      } catch (pubErr) {
-        logger.warn('Failed to publish prediction to MQTT', { error: pubErr });
-      }
-    }
-  } catch (error) {
+  } else {
     logger.warn('Inference failed for stored sensor reading', {
       sensorReadingId: reading.id,
-      error: error instanceof Error ? error.message : String(error)
+      error: regression.reason instanceof Error ? regression.reason.message : String(regression.reason)
+    });
+  }
+
+  if (classification.status === 'fulfilled' && classification.value) {
+    logger.info('Classification prediction stored', {
+      sensorReadingId: reading.id,
+      predictionResultId: classification.value.id,
+      inferenceStatus: classification.value.inference_status
+    });
+  } else if (classification.status === 'rejected') {
+    logger.warn('Classification failed for stored sensor reading', {
+      sensorReadingId: reading.id,
+      error: classification.reason instanceof Error ? classification.reason.message : String(classification.reason)
+    });
+  }
+
+  // OLED: hasil klasifikasi bila ada kelas yang pasti. Bila klasifikasi nonaktif, gagal, atau UNCERTAIN,
+  // pakai hasil regresi (ml_pipeline) sebagai gantinya.
+  const cls = clsUrl && classification.status === 'fulfilled' ? classification.value : null;
+  if (cls && cls.inference_status === 'success' && cls.clinical_category !== 'UNCERTAIN') {
+    await publishPredictionToDevice(reading, {
+      clinical_category: cls.clinical_category,
+      confidence_score: cls.confidence_score === null ? null : Number(cls.confidence_score),
+      timestamp: cls.predicted_at,
+      source: 'classification'
+    });
+  } else if (regression.status === 'fulfilled' && regression.value.prediction.inference_status === 'success') {
+    const prediction = regression.value.prediction;
+    await publishPredictionToDevice(reading, {
+      glucose_estimate: Number(prediction.glucose_estimate),
+      clinical_category: prediction.clinical_category,
+      confidence_score: Number(prediction.confidence_score),
+      timestamp: prediction.predicted_at,
+      source: 'regression'
     });
   }
 }

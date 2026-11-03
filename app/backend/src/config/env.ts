@@ -44,5 +44,7 @@ export const env = {
   MQTT_PASSWORD: readOptionalString('MQTT_PASSWORD'),
   MQTT_TOPIC_PREFIX: readString('MQTT_TOPIC_PREFIX', 'glicovia'),
   ML_SERVICE_URL: readString('ML_SERVICE_URL', 'http://localhost:8001'),
+  // Service klasifikasi (ml_classification). Kosong = hanya regresi, perilaku lama.
+  ML_CLS_SERVICE_URL: readOptionalString('ML_CLS_SERVICE_URL'),
   ML_SERVICE_TIMEOUT_MS: readNumber('ML_SERVICE_TIMEOUT_MS', 5000)
 } as const;

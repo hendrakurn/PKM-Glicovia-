@@ -96,9 +96,13 @@ client.on('message', (topic, message) => {
       console.log('🎉 HASIL PREDIKSI AI DITERIMA DARI CLOUD!');
       console.log('====================================================');
       
-      const glucose = Number(pred.glucose_estimate).toFixed(1);
+      // Dengan ML_CLS_SERVICE_URL aktif, backend hanya mengirim hasil klasifikasi (tanpa glucose_estimate).
+      const hasGlucose = pred.glucose_estimate !== undefined && pred.glucose_estimate !== null;
+      const glucose = hasGlucose ? Number(pred.glucose_estimate).toFixed(1) : '-';
       const category = pred.clinical_category || 'Unknown';
-      const confidence = (Number(pred.confidence_score) * 100).toFixed(0);
+      const confidence = pred.confidence_score === undefined || pred.confidence_score === null
+        ? '-'
+        : (Number(pred.confidence_score) * 100).toFixed(0);
 
       // Visualisasi Layar OLED SH1106 (128x64)
       console.log('\n┌────────────────────────────────────────┐');
