@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState, type ReactNode } from "react";
 import type { Icon } from "@phosphor-icons/react";
-import { Brain, ChartLine, DeviceMobile, House, Pulse, SignOut, Wrench } from "@phosphor-icons/react";
+import { BookOpen, Brain, ChartLine, DeviceMobile, House, Pulse, SignOut, Wrench } from "@phosphor-icons/react";
 import { api } from "@/lib/api/client";
 import { cn, formatTimestamp } from "@/lib/utils";
 import { GlicoBadge, GlicoButton, Heartbeat, RowStatus, SkeletonBlock } from "@/components/glicovia-ui";
@@ -16,6 +16,7 @@ const navItems: Array<{ href: string; label: string; icon: Icon; tone: string }>
   { href: "/devices", label: "Devices", icon: DeviceMobile, tone: "bg-[color:var(--butter)]" },
   { href: "/predictions", label: "Models", icon: Brain, tone: "bg-[color:var(--rose)]" },
   { href: "/operator", label: "Operator", icon: Wrench, tone: "bg-[color:var(--coral)]" },
+  { href: "/guide", label: "Panduan", icon: BookOpen, tone: "bg-[color:var(--sky)]" },
 ];
 
 export function AppShell({ children }: { children: ReactNode }) {

@@ -8,15 +8,21 @@ import type { AuthProfile, PredictionResultRow, PredictionTrendRow, SensorReadin
 import { categoryTone, dateInputToIso, formatGlucose, formatPercentValue, formatTimestamp, qualityTone, readingMeaning, relativeFreshness, statusTone, toNumber } from "@/lib/utils";
 import { GlicoBadge, GlicoButton, GlicoPanel, Heartbeat, KeyValue, PageHeader, SkeletonBlock, StateBlock, glicoButtonClasses } from "@/components/glicovia-ui";
 import { useAuth } from "@/components/auth-provider";
+import { ExportReportButton, ReportSheet } from "@/components/report-sheet";
 import { TrendChart, type PredictionTrendFilters } from "@/components/trend-chart";
 
 type OverviewData = {
   profile: AuthProfile;
   latest: SensorReadingRow | null;
   latestPrediction: PredictionResultRow | null;
+  latestClassification: PredictionResultRow | null;
   trends: PredictionTrendRow[];
   devices: SubjectDeviceRow[];
 };
+
+// Backend menyimpan satu baris per (pembacaan, model): regresi dan klasifikasi terpisah.
+// Nama ini = model_name di ml_classification (cls/train.py) dan fallback klasifikasi di backend.
+const CLASSIFICATION_MODEL_NAME = "GlicoSaliva SVC 3 kelas";
 
 const initialTrendFilters: PredictionTrendFilters = {
   deviceId: "",
@@ -74,7 +80,7 @@ export function OverviewClient() {
         const profile = await api.me(authToken);
         const [latestResult, latestPredictionResult, trendsResult, devicesResult] = await Promise.allSettled([
           api.latestReading({ device_id: appliedTrendFilters.deviceId || undefined }, authToken),
-          api.myLatestPrediction({ device_id: appliedTrendFilters.deviceId || undefined }, authToken),
+          api.myPredictions({ limit: 10, device_id: appliedTrendFilters.deviceId || undefined }, authToken),
           api.myPredictionTrends(trendQuery, authToken),
           api.myDevices(authToken),
         ]);
@@ -89,8 +95,11 @@ export function OverviewClient() {
         }
 
         let latestPrediction: PredictionResultRow | null = null;
+        let latestClassification: PredictionResultRow | null = null;
         if (latestPredictionResult.status === "fulfilled") {
-          latestPrediction = latestPredictionResult.value.prediction;
+          const predictions = latestPredictionResult.value.predictions;
+          latestPrediction = predictions.find((row) => row.model_name !== CLASSIFICATION_MODEL_NAME) ?? null;
+          latestClassification = predictions.find((row) => row.model_name === CLASSIFICATION_MODEL_NAME) ?? null;
         } else if (!(latestPredictionResult.reason instanceof ApiError && latestPredictionResult.reason.status === 404)) {
           throw latestPredictionResult.reason;
         }
@@ -102,6 +111,7 @@ export function OverviewClient() {
           profile,
           latest,
           latestPrediction,
+          latestClassification,
           trends: trendsResult.value.trends,
           devices: devicesResult.value.devices,
         });
@@ -129,10 +139,12 @@ export function OverviewClient() {
   }
 
   const latestPrediction = data?.latestPrediction ?? null;
+  const latestClassification = data?.latestClassification ?? null;
+  const classificationCategory = latestClassification?.inference_status === "success" ? latestClassification.clinical_category : null;
   const primaryValue = latestPrediction?.glucose_estimate ?? data?.latest?.salivary_glucose ?? null;
   const hasPrimaryValue = toNumber(primaryValue) !== null;
   const primaryLabel = latestPrediction?.glucose_estimate ? "Estimated blood glucose" : "Saliva glucose signal";
-  const category = latestPrediction?.clinical_category ?? (data?.latest ? "Reading received" : null);
+  const category = classificationCategory ?? latestPrediction?.clinical_category ?? (data?.latest ? "Reading received" : null);
   const freshness = relativeFreshness(latestPrediction?.sensor_recorded_at ?? data?.latest?.recorded_at);
 
   const nextAction = useMemo(() => {
@@ -178,6 +190,17 @@ export function OverviewClient() {
         }
       />
 
+      <ReportSheet
+        subjectName={data.profile.subject.display_name || data.profile.user.full_name || "-"}
+        subjectCode={data.profile.subject.subject_code}
+        periodLabel={appliedTrendFilters.from || appliedTrendFilters.to ? `${appliedTrendFilters.from || "awal"} s/d ${appliedTrendFilters.to || "sekarang"}` : appliedTrendFilters.range === "month" ? "30 hari terakhir" : "7 hari terakhir"}
+        latest={data.latest}
+        prediction={latestPrediction}
+        classification={latestClassification}
+        trends={data.trends}
+        devices={data.devices}
+      />
+
       <section className="grid gap-5 xl:grid-cols-[minmax(0,1.35fr)_390px]">
         <GlicoPanel className="reveal-up overflow-hidden">
           <div className="grid gap-0 lg:grid-cols-[minmax(0,1fr)_280px]">
@@ -193,7 +216,7 @@ export function OverviewClient() {
                 </p>
                 <p className="pb-2 text-xl font-black text-[color:var(--ink-muted)]">mg/dL</p>
               </div>
-              <p className="mt-5 max-w-2xl text-lg leading-8 text-[color:var(--ink-muted)]">{readingMeaning(latestPrediction?.clinical_category)}</p>
+              <p className="mt-5 max-w-2xl text-lg leading-8 text-[color:var(--ink-muted)]">{readingMeaning(classificationCategory ?? latestPrediction?.clinical_category)}</p>
             </div>
 
             <div className="border-t-2 border-[color:var(--line)] bg-[color:var(--mint)] p-5 lg:border-l-2 lg:border-t-0">
@@ -208,7 +231,7 @@ export function OverviewClient() {
         </GlicoPanel>
 
         <div className="hidden md:block">
-          <TrustSignalsPanel latest={data.latest} latestPrediction={latestPrediction} />
+          <TrustSignalsPanel latest={data.latest} latestPrediction={latestPrediction} latestClassification={latestClassification} />
         </div>
       </section>
 
@@ -223,10 +246,14 @@ export function OverviewClient() {
             onApplyFilters={applyTrendFilters}
             onResetFilters={resetTrendFilters}
           />
+          <div className="mt-5 flex flex-wrap items-center justify-between gap-3 border-t-2 border-[color:var(--line)] pt-5">
+            <p className="text-sm text-[color:var(--ink-muted)]">Simpan ringkasan periode ini sebagai laporan PDF untuk dokumentasi hasil pemeriksaan.</p>
+            <ExportReportButton />
+          </div>
         </GlicoPanel>
 
         <div className="md:hidden">
-          <TrustSignalsPanel latest={data.latest} latestPrediction={latestPrediction} />
+          <TrustSignalsPanel latest={data.latest} latestPrediction={latestPrediction} latestClassification={latestClassification} />
         </div>
       </section>
 
@@ -239,7 +266,12 @@ export function OverviewClient() {
   );
 }
 
-function TrustSignalsPanel({ latest, latestPrediction }: { latest: SensorReadingRow | null; latestPrediction: PredictionResultRow | null }) {
+function TrustSignalsPanel({ latest, latestPrediction, latestClassification }: {
+  latest: SensorReadingRow | null;
+  latestPrediction: PredictionResultRow | null;
+  latestClassification: PredictionResultRow | null;
+}) {
+  const classified = latestClassification?.inference_status === "success" ? latestClassification.clinical_category : null;
   return (
     <GlicoPanel className="reveal-up p-5" style={{ animationDelay: "70ms" }}>
       <div className="mb-4 flex items-start justify-between gap-3">
@@ -252,6 +284,17 @@ function TrustSignalsPanel({ latest, latestPrediction }: { latest: SensorReading
       <KeyValue label="Model" value={latestPrediction ? `${latestPrediction.model_name ?? "Model"} ${latestPrediction.model_version ?? "version pending"}` : "No prediction yet"} />
       <KeyValue label="Confidence" value={formatPercentValue(latestPrediction?.confidence_score)} />
       <KeyValue label="Inference" value={<GlicoBadge tone={statusTone(latestPrediction?.inference_status)}>{latestPrediction?.inference_status ?? "Not available"}</GlicoBadge>} />
+      {latestClassification ? (
+        <>
+          <KeyValue
+            label="Classification"
+            value={classified
+              ? <GlicoBadge tone={categoryTone(classified)}>{classified}</GlicoBadge>
+              : <GlicoBadge tone={statusTone(latestClassification.inference_status)}>{latestClassification.inference_status}</GlicoBadge>}
+          />
+          <KeyValue label="Classification confidence" value={formatPercentValue(classified ? latestClassification.confidence_score : null)} />
+        </>
+      ) : null}
       <KeyValue label="Reading quality" value={<GlicoBadge tone={qualityTone(latest?.quality_flag)}>{latest?.quality_flag ?? "No reading"}</GlicoBadge>} />
       <KeyValue label="Reading timestamp" value={formatTimestamp(latest?.recorded_at)} />
     </GlicoPanel>
